@@ -36,6 +36,14 @@ export default function Navbar() {
               Organizations
             </Link>
           </li>
+          <li>
+            <Link
+              to="/bookit"
+              className={isActive('/bookit') ? 'active' : ''}
+            >
+              BookIt
+            </Link>
+          </li>
         </ul>
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
