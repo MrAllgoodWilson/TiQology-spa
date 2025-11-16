@@ -1,80 +1,47 @@
-import { useAuthStore } from '../stores/authStore';
-import { useOrganizationStore } from '../stores/organizationStore';
+import HeroCard from '../components/dashboard/HeroCard';
+import AskKikiCard from '../components/dashboard/AskKikiCard';
+import MissionsCard from '../components/dashboard/MissionsCard';
+import MoneySnapshotCard from '../components/dashboard/MoneySnapshotCard';
+import QuickActionsCard from '../components/dashboard/QuickActionsCard';
+import UpcomingCard from '../components/dashboard/UpcomingCard';
+import AlertsCard from '../components/dashboard/AlertsCard';
+import DealsAndModulesSection from '../components/dashboard/DealsAndModulesSection';
+import {
+  mockHeroData,
+  mockAskKikiData,
+  mockMissionsData,
+  mockMoneySnapshot,
+  mockQuickActionsData,
+  mockUpcomingData,
+  mockAlertsData,
+  mockDealsAndModulesData,
+} from '../mocks/consumerDashboardMock';
 
 export default function DashboardPage() {
-  const user = useAuthStore((state) => state.user);
-  const selectedOrganization = useOrganizationStore((state) => state.selectedOrganization);
-
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Welcome back, {user?.name}!</p>
-      </div>
+    <div className="p-4 md:p-6 space-y-6">
+      {/* Hero Section - Full Width */}
+      <HeroCard data={mockHeroData} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Stats Cards */}
-        <div className="stats shadow">
-          <div className="stat">
-            <div className="stat-title">Total Organizations</div>
-            <div className="stat-value text-primary">3</div>
-            <div className="stat-desc">Active organizations</div>
-          </div>
+      {/* Two Column Layout on Desktop, Stacked on Mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column */}
+        <div className="space-y-6">
+          <MoneySnapshotCard data={mockMoneySnapshot} />
+          <QuickActionsCard data={mockQuickActionsData} />
+          <MissionsCard data={mockMissionsData} />
         </div>
 
-        <div className="stats shadow">
-          <div className="stat">
-            <div className="stat-title">Active Projects</div>
-            <div className="stat-value text-secondary">12</div>
-            <div className="stat-desc">In progress</div>
-          </div>
-        </div>
-
-        <div className="stats shadow">
-          <div className="stat">
-            <div className="stat-title">Team Members</div>
-            <div className="stat-value text-accent">425</div>
-            <div className="stat-desc">Total across organizations</div>
-          </div>
+        {/* Right Column */}
+        <div className="space-y-6">
+          <AskKikiCard data={mockAskKikiData} />
+          <UpcomingCard data={mockUpcomingData} />
+          <AlertsCard data={mockAlertsData} />
         </div>
       </div>
 
-      {selectedOrganization && (
-        <div className="mt-6">
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title">Selected Organization</h2>
-              <p className="font-semibold">{selectedOrganization.name}</p>
-              <p>{selectedOrganization.description}</p>
-              <div className="badge badge-primary">
-                {selectedOrganization.memberCount} members
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="mt-6">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Recent Activity</h2>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <div className="badge badge-success">New</div>
-                <span>Project Alpha was created</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="badge badge-info">Update</div>
-                <span>Team meeting scheduled for tomorrow</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="badge badge-warning">Pending</div>
-                <span>Review pending for Project Beta</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      {/* Deals and Modules Section - Full Width */}
+      <DealsAndModulesSection data={mockDealsAndModulesData} />
     </div>
   );
 }
