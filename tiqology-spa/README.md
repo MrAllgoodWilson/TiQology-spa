@@ -84,6 +84,10 @@ npm run lint
 tiqology-spa/
 ├── src/
 │   ├── components/       # Reusable UI components
+│   │   ├── bookit/       # BookIt module components
+│   │   │   ├── BookItFilters.tsx
+│   │   │   ├── BookItServiceCard.tsx
+│   │   │   └── BookItServiceList.tsx
 │   │   ├── Navbar.tsx
 │   │   ├── ProtectedRoute.tsx
 │   │   └── dashboard/    # Dashboard-specific components
@@ -97,9 +101,12 @@ tiqology-spa/
 │   │       └── DealsAndModulesSection.tsx
 │   ├── layouts/          # Layout components
 │   │   └── MainLayout.tsx
+│   ├── mocks/            # Mock data for demonstration
+│   │   └── bookItMock.ts
 │   ├── pages/            # Page components (routes)
-│   │   ├── LoginPage.tsx
+│   │   ├── BookItPage.tsx
 │   │   ├── DashboardPage.tsx
+│   │   ├── LoginPage.tsx
 │   │   └── OrganizationsPage.tsx
 │   ├── stores/           # Zustand state stores
 │   │   ├── authStore.ts
@@ -121,6 +128,7 @@ The application includes the following routes:
 - `/login` - Login page (public)
 - `/dashboard` - TiQology Consumer Home Dashboard (protected)
 - `/organizations` - Organizations management page (protected)
+- `/bookit` - BookIt services marketplace page (protected)
 - `/` - Redirects to `/dashboard` if authenticated, otherwise to `/login`
 
 ## Consumer Home Dashboard
@@ -155,6 +163,33 @@ The dashboard uses a responsive grid layout:
 ### Protected Routes
 
 Protected routes require authentication. If a user tries to access a protected route without being authenticated, they will be redirected to the login page.
+
+## Modules
+
+### BookIt Services Marketplace
+
+The BookIt module (`/bookit`) provides a marketplace for browsing and booking professional services from verified providers. This is a mock-only implementation for demonstration purposes.
+
+**Features:**
+- Browse service providers across multiple categories (Web Development, Mobile Development, UI/UX Design, Data Science, etc.)
+- Filter providers by category, availability, price range, and verification status
+- View detailed provider profiles including ratings, reviews, skills, and hourly rates
+- Responsive grid layout (1 column on mobile, 2-3 columns on desktop)
+
+**Components:**
+- `BookItPage.tsx` - Main page component wrapped in MainLayout
+- `BookItFilters.tsx` - Filter UI using DaisyUI components (filters are UI-only, no real filtering logic)
+- `BookItServiceCard.tsx` - Individual service provider card displaying provider information
+- `BookItServiceList.tsx` - Grid layout component that renders the list of service providers
+
+**Mock Data:**
+The module uses mock data defined in `/src/mocks/bookItMock.ts` containing an array of 12 sample service providers with fields including:
+- Basic info (name, category, description)
+- Rating and review metrics
+- Pricing (hourly rate)
+- Location and availability
+- Skills/expertise tags
+- Verification status
 
 ## State Management
 
@@ -204,6 +239,8 @@ The application currently uses mock data for demonstration purposes:
   - Special deals and feature modules
 
 **Note**: The dashboard uses 100% mock data and does not make any API calls.
+- Dashboard displays static statistics
+- BookIt services marketplace displays 12 mock service providers from `/src/mocks/bookItMock.ts`
 
 ### Future Enhancements
 
@@ -213,6 +250,8 @@ The application currently uses mock data for demonstration purposes:
 - Expand organization management features
 - Add user profile management
 - Implement role-based access control
+- Add functional filtering and search to BookIt marketplace
+- Implement real booking functionality
 
 ## Scripts Reference
 
