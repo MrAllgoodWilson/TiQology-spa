@@ -3,6 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import OrganizationsPage from './pages/OrganizationsPage';
+import BookItPage from './pages/BookItPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="organizations" element={<OrganizationsPage />} />
+          <Route path="bookit" element={<BookItPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
