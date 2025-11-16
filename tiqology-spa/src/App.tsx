@@ -7,6 +7,7 @@ import BookItPage from './pages/BookItPage';
 import AlertsPage from './pages/AlertsPage';
 import TrustShieldPage from './pages/TrustShieldPage';
 import ProfilePage from './pages/ProfilePage';
+import EnterprisePage from './pages/EnterprisePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
@@ -33,6 +34,14 @@ function App() {
             element={
               <RoleProtectedRoute requiredRole="security">
                 <TrustShieldPage />
+              </RoleProtectedRoute>
+            } 
+          />
+          <Route 
+            path="enterprise" 
+            element={
+              <RoleProtectedRoute requiredRoles={["owner", "admin"]}>
+                <EnterprisePage />
               </RoleProtectedRoute>
             } 
           />

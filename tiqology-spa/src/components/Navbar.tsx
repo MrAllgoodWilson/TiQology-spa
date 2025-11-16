@@ -3,7 +3,7 @@ import { useAuthStore } from '../stores/authStore';
 
 export default function Navbar() {
   const location = useLocation();
-  const { user, isAuthenticated, logout, isSecurity } = useAuthStore();
+  const { user, isAuthenticated, logout, isSecurity, isEnterpriseAdmin } = useAuthStore();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -43,6 +43,16 @@ export default function Navbar() {
                 className={isActive('/trustshield') ? 'active' : ''}
               >
                 TrustShield
+              </Link>
+            </li>
+          )}
+          {isEnterpriseAdmin() && (
+            <li>
+              <Link
+                to="/enterprise"
+                className={isActive('/enterprise') ? 'active' : ''}
+              >
+                Enterprise
               </Link>
             </li>
           )}
