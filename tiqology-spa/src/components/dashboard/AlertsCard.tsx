@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { AlertsData } from '../../mocks/consumerDashboardMock';
 
 interface AlertsCardProps {
@@ -63,7 +64,9 @@ export default function AlertsCard({ data }: AlertsCardProps) {
         </div>
 
         <div className="card-actions justify-end mt-4">
-          <button className="btn btn-primary btn-sm">View All Alerts</button>
+          <Link to="/alerts" className="btn btn-primary btn-sm">
+            View All Alerts
+          </Link>
         </div>
       </div>
     </div>

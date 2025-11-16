@@ -3,7 +3,7 @@ import { useAuthStore } from '../stores/authStore';
 
 export default function Navbar() {
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, isSecurity } = useAuthStore();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -28,6 +28,24 @@ export default function Navbar() {
               Dashboard
             </Link>
           </li>
+          <li>
+            <Link
+              to="/alerts"
+              className={isActive('/alerts') ? 'active' : ''}
+            >
+              Alerts
+            </Link>
+          </li>
+          {isSecurity() && (
+            <li>
+              <Link
+                to="/trustshield"
+                className={isActive('/trustshield') ? 'active' : ''}
+              >
+                TrustShield
+              </Link>
+            </li>
+          )}
           <li>
             <Link
               to="/organizations"
@@ -61,7 +79,7 @@ export default function Navbar() {
               <span>{user?.email}</span>
             </li>
             <li>
-              <a>Profile</a>
+              <Link to="/profile">Profile</Link>
             </li>
             <li>
               <a>Settings</a>

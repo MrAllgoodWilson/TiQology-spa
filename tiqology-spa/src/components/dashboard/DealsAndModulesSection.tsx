@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
 import type { DealsAndModulesData } from '../../mocks/consumerDashboardMock';
 
 interface DealsAndModulesSectionProps {
@@ -5,6 +7,8 @@ interface DealsAndModulesSectionProps {
 }
 
 export default function DealsAndModulesSection({ data }: DealsAndModulesSectionProps) {
+  const isSecurity = useAuthStore((state) => state.isSecurity());
+
   return (
     <div className="space-y-6">
       {/* Deals Section */}
@@ -74,6 +78,20 @@ export default function DealsAndModulesSection({ data }: DealsAndModulesSectionP
                 </div>
               </div>
             ))}
+            
+            {/* TrustShield Module Card */}
+            {isSecurity && (
+              <Link to="/trustshield" className="card border-2 border-primary bg-primary/5 hover:bg-primary/10 transition-colors">
+                <div className="card-body p-4 text-center">
+                  <span className="text-4xl mb-2">🛡️</span>
+                  <h3 className="font-semibold text-sm">TrustShield</h3>
+                  <p className="text-xs text-base-content/70">Security monitoring</p>
+                  <div className="form-control mt-2">
+                    <div className="badge badge-success badge-sm">Active</div>
+                  </div>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>
