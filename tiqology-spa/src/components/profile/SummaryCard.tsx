@@ -15,7 +15,7 @@ export default function SummaryCard({ summary }: SummaryCardProps) {
           <div className="avatar placeholder">
             <div className="bg-primary text-primary-content rounded-full w-24 h-24">
               <span className="text-4xl font-bold">
-                {summary.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                {summary.name.split(' ').filter(n => n.length > 0).map(n => n[0]).join('').toUpperCase()}
               </span>
             </div>
           </div>

@@ -45,7 +45,7 @@ export default function AlertsPage() {
 
   const unreadCount = alerts.filter(a => !a.read).length;
   
-  // Calculate this week's alerts count - using a simple approximation
+  // Calculate recent alerts count (first 5 most recent)
   const recentAlerts = alerts.slice(0, 5).length;
 
   return (
