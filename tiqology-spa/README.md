@@ -11,6 +11,11 @@ A modern, responsive single-page application built with Vite, React, TypeScript,
 - 🧭 **React Router** - Client-side routing
 - 🗃️ **Zustand** - Lightweight state management
 - 🔐 **Protected Routes** - Authentication-based navigation
+- 🛡️ **Role-Based Access Control** - Role-protected routes and features
+- 🔔 **Alerts & Notifications Center** - Centralized notification management
+- 🔒 **TrustShield Lite** - Security monitoring and threat management
+- 👤 **User Profile Management** - Profile and preferences configuration
+- 📦 **Multiple Modules** - BookIt marketplace, Dashboard, Organizations, and more
 
 ## Tech Stack
 
@@ -84,35 +89,52 @@ npm run lint
 tiqology-spa/
 ├── src/
 │   ├── components/       # Reusable UI components
+│   │   ├── alerts/       # Alerts module components
+│   │   │   ├── AlertCard.tsx
+│   │   │   ├── AlertList.tsx
+│   │   │   └── FilterBar.tsx
 │   │   ├── bookit/       # BookIt module components
 │   │   │   ├── BookItFilters.tsx
 │   │   │   ├── BookItServiceCard.tsx
 │   │   │   └── BookItServiceList.tsx
+│   │   ├── profile/      # Profile module components
+│   │   │   ├── PreferencesCard.tsx
+│   │   │   └── SummaryCard.tsx
+│   │   ├── trustshield/  # TrustShield module components
+│   │   │   ├── InsightsCard.tsx
+│   │   │   ├── SummaryCard.tsx
+│   │   │   └── ThreatList.tsx
+│   │   ├── dashboard/    # Dashboard-specific components
+│   │   │   ├── HeroCard.tsx
+│   │   │   ├── AskKikiCard.tsx
+│   │   │   ├── MissionsCard.tsx
+│   │   │   ├── MoneySnapshotCard.tsx
+│   │   │   ├── QuickActionsCard.tsx
+│   │   │   ├── UpcomingCard.tsx
+│   │   │   ├── AlertsCard.tsx
+│   │   │   └── DealsAndModulesSection.tsx
 │   │   ├── Navbar.tsx
 │   │   ├── ProtectedRoute.tsx
-│   │   └── dashboard/    # Dashboard-specific components
-│   │       ├── HeroCard.tsx
-│   │       ├── AskKikiCard.tsx
-│   │       ├── MissionsCard.tsx
-│   │       ├── MoneySnapshotCard.tsx
-│   │       ├── QuickActionsCard.tsx
-│   │       ├── UpcomingCard.tsx
-│   │       ├── AlertsCard.tsx
-│   │       └── DealsAndModulesSection.tsx
+│   │   └── RoleProtectedRoute.tsx
 │   ├── layouts/          # Layout components
 │   │   └── MainLayout.tsx
 │   ├── mocks/            # Mock data for demonstration
-│   │   └── bookItMock.ts
+│   │   ├── alertsMock.ts
+│   │   ├── bookItMock.ts
+│   │   ├── consumerDashboardMock.ts
+│   │   ├── profileMock.ts
+│   │   └── trustShieldMock.ts
 │   ├── pages/            # Page components (routes)
+│   │   ├── AlertsPage.tsx
 │   │   ├── BookItPage.tsx
 │   │   ├── DashboardPage.tsx
 │   │   ├── LoginPage.tsx
-│   │   └── OrganizationsPage.tsx
+│   │   ├── OrganizationsPage.tsx
+│   │   ├── ProfilePage.tsx
+│   │   └── TrustShieldPage.tsx
 │   ├── stores/           # Zustand state stores
 │   │   ├── authStore.ts
 │   │   └── organizationStore.ts
-│   ├── mocks/            # Mock data for development
-│   │   └── consumerDashboardMock.ts
 │   ├── App.tsx           # Main application component
 │   ├── main.tsx          # Application entry point
 │   └── index.css         # Global styles with Tailwind
@@ -127,6 +149,9 @@ The application includes the following routes:
 
 - `/login` - Login page (public)
 - `/dashboard` - TiQology Consumer Home Dashboard (protected)
+- `/alerts` - Alerts & Notifications Center (protected)
+- `/trustshield` - TrustShield Lite security module (protected, requires 'security' role)
+- `/profile` - User profile and preferences (protected)
 - `/organizations` - Organizations management page (protected)
 - `/bookit` - BookIt services marketplace page (protected)
 - `/` - Redirects to `/dashboard` if authenticated, otherwise to `/login`
@@ -164,6 +189,27 @@ The dashboard uses a responsive grid layout:
 
 Protected routes require authentication. If a user tries to access a protected route without being authenticated, they will be redirected to the login page.
 
+#### Role-Based Protection
+
+The application supports role-based access control for specific routes:
+
+- **RoleProtectedRoute Component**: Wraps routes that require specific user roles
+- **Role Checking**: Users must have the required role to access certain pages
+- **Access Restriction**: Users without the required role see a friendly restriction message
+- **Demo Behavior**: In the mock login, users with "security" in their email address receive the security role
+
+**Role-Protected Routes:**
+- `/trustshield` - Requires the `security` role to access TrustShield security features
+
+**User Roles:**
+- `user` - Default role for all authenticated users
+- `security` - Access to security modules and features
+- `admin` - Administrative privileges (available in mock data)
+
+To test role-based protection:
+- Login with an email containing "security" (e.g., `security@example.com`) to get security role access
+- Login with any other email to see the access restriction message when attempting to access `/trustshield`
+
 ## Modules
 
 ### BookIt Services Marketplace
@@ -191,15 +237,106 @@ The module uses mock data defined in `/src/mocks/bookItMock.ts` containing an ar
 - Skills/expertise tags
 - Verification status
 
+### Alerts & Notifications Center
+
+The Alerts & Notifications Center (`/alerts`) provides a centralized hub for viewing and managing all user notifications. This is a mock-only implementation for demonstration purposes.
+
+**Features:**
+- View all alerts and notifications in one place
+- Filter alerts by category (system, payment, security, mission, social)
+- Filter alerts by type (info, success, warning, error)
+- Filter alerts by read/unread status
+- View alert statistics (total, unread, recent)
+- Mark individual alerts as read
+- Navigate to relevant sections via action buttons
+- Responsive layout with mobile-friendly design
+
+**Components:**
+- `AlertsPage.tsx` - Main page component with filtering and stats
+- `FilterBar.tsx` - Filter controls for category, type, and read status
+- `AlertList.tsx` - Renders the list of filtered alerts with empty state
+- `AlertCard.tsx` - Individual alert card with badges, icons, and actions
+
+**Mock Data:**
+The module uses mock data defined in `/src/mocks/alertsMock.ts` containing 9 sample alerts with fields including:
+- Alert metadata (id, title, message, timestamp)
+- Type classification (info, success, warning, error)
+- Category (system, payment, security, mission, social)
+- Read status
+- Optional action buttons with labels and URLs
+
+### TrustShield Lite Security Module
+
+The TrustShield Lite module (`/trustshield`) provides security monitoring and threat management features. This module is **role-protected** and requires the `security` role to access. This is a mock-only implementation for demonstration purposes.
+
+**Features:**
+- Security score overview with visual indicators
+- Active threat monitoring and management
+- Security insights and recommendations
+- Threat categorization by severity (critical, high, medium, low)
+- Threat status tracking (active, investigating, resolved)
+- Security categories (authentication, data-protection, network, device)
+- Statistics on active and resolved threats
+- Responsive layout with sidebar summary and main content area
+
+**Components:**
+- `TrustShieldPage.tsx` - Main page component with security overview
+- `SummaryCard.tsx` - Security score and statistics summary
+- `ThreatList.tsx` - Display of active and resolved security threats
+- `InsightsCard.tsx` - Security recommendations and best practices
+
+**Mock Data:**
+The module uses mock data defined in `/src/mocks/trustShieldMock.ts` containing:
+- Security summary (overall score, scan time, threat counts)
+- 5 sample threats with varying severity levels and statuses
+- 5 security insights with recommendations across different categories
+
+**Access Control:**
+- Requires `security` role to access
+- Users without the role see a friendly access restriction message
+- Demo: Add "security" to your email when logging in to gain access (e.g., `security@example.com`)
+
+### User Profile & Preferences
+
+The Profile module (`/profile`) allows users to view and manage their profile information and account preferences. This is a mock-only implementation for demonstration purposes.
+
+**Features:**
+- View profile summary with avatar, contact info, and account details
+- Display TiQ Points and user level (gamification)
+- Manage notification preferences (email, push, SMS)
+- Control privacy settings (profile visibility, activity sharing)
+- Customize appearance (theme selection)
+- Configure localization (language, currency, timezone)
+- Responsive two-column layout
+
+**Components:**
+- `ProfilePage.tsx` - Main page component with profile and preferences
+- `SummaryCard.tsx` - Profile information and statistics
+- `PreferencesCard.tsx` - User preferences with toggles and dropdowns
+
+**Mock Data:**
+The module uses mock data defined in `/src/mocks/profileMock.ts` containing:
+- Profile summary (name, email, phone, member since, account type)
+- Gamification data (TiQ points, level)
+- Notification preferences (email, push, SMS toggles)
+- Privacy settings (visibility, activity, data sharing)
+- Appearance and localization settings (theme, language, currency, timezone)
+
 ## State Management
 
 ### Auth Store (`authStore.ts`)
 
-Manages user authentication state:
-- `user` - Current user object
+Manages user authentication state and role-based access control:
+- `user` - Current user object with roles array
 - `isAuthenticated` - Authentication status
-- `login()` - Login function
+- `login()` - Login function (assigns roles based on email)
 - `logout()` - Logout function
+- `hasRole(role: string)` - Check if user has a specific role
+- `isSecurity()` - Selector to check if user has security role
+
+**Role Assignment (Mock):**
+- Users with "security" in their email receive: `['user', 'security', 'admin']`
+- All other users receive: `['user']`
 
 ### Organization Store (`organizationStore.ts`)
 
@@ -228,6 +365,7 @@ Available DaisyUI themes:
 The application currently uses mock data for demonstration purposes:
 - Login accepts any email/password combination
 - Organizations are pre-populated with sample data
+- **Role Assignment**: Users with "security" in their email get security role access
 - **Consumer Dashboard**: All dashboard data is sourced from `/src/mocks/consumerDashboardMock.ts` including:
   - Hero greeting and user information
   - Kiki AI assistant suggestions
@@ -237,21 +375,25 @@ The application currently uses mock data for demonstration purposes:
   - Upcoming events and tasks
   - System alerts and notifications
   - Special deals and feature modules
+- **Alerts Center**: 9 sample alerts from `/src/mocks/alertsMock.ts` across multiple categories
+- **TrustShield**: Security data from `/src/mocks/trustShieldMock.ts` including threats and insights
+- **Profile**: User profile and preferences from `/src/mocks/profileMock.ts`
+- **BookIt**: 12 mock service providers from `/src/mocks/bookItMock.ts`
 
-**Note**: The dashboard uses 100% mock data and does not make any API calls.
-- Dashboard displays static statistics
-- BookIt services marketplace displays 12 mock service providers from `/src/mocks/bookItMock.ts`
+**Note**: All modules use 100% mock data and do not make any API calls.
 
 ### Future Enhancements
 
 - Connect to real backend APIs
-- Implement actual authentication
+- Implement actual authentication with JWT tokens
 - Add form validation
 - Expand organization management features
-- Add user profile management
-- Implement role-based access control
+- Implement real-time notifications
 - Add functional filtering and search to BookIt marketplace
 - Implement real booking functionality
+- Enhance TrustShield with real security scanning
+- Add two-factor authentication
+- Implement data persistence for user preferences
 
 ## Scripts Reference
 

@@ -4,7 +4,11 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import OrganizationsPage from './pages/OrganizationsPage';
 import BookItPage from './pages/BookItPage';
+import AlertsPage from './pages/AlertsPage';
+import TrustShieldPage from './pages/TrustShieldPage';
+import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 
 function App() {
   return (
@@ -23,6 +27,16 @@ function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="organizations" element={<OrganizationsPage />} />
           <Route path="bookit" element={<BookItPage />} />
+          <Route path="alerts" element={<AlertsPage />} />
+          <Route 
+            path="trustshield" 
+            element={
+              <RoleProtectedRoute requiredRole="security">
+                <TrustShieldPage />
+              </RoleProtectedRoute>
+            } 
+          />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
