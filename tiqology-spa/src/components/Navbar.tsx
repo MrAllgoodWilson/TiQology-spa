@@ -30,6 +30,14 @@ export default function Navbar() {
           </li>
           <li>
             <Link
+              to="/war-room"
+              className={isActive('/war-room') ? 'active' : ''}
+            >
+              War Room
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/alerts"
               className={isActive('/alerts') ? 'active' : ''}
             >

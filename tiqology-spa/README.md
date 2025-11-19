@@ -123,7 +123,8 @@ tiqology-spa/
 │   │   ├── bookItMock.ts
 │   │   ├── consumerDashboardMock.ts
 │   │   ├── profileMock.ts
-│   │   └── trustShieldMock.ts
+│   │   ├── trustShieldMock.ts
+│   │   └── warRoomMock.ts
 │   ├── pages/            # Page components (routes)
 │   │   ├── AlertsPage.tsx
 │   │   ├── BookItPage.tsx
@@ -131,7 +132,8 @@ tiqology-spa/
 │   │   ├── LoginPage.tsx
 │   │   ├── OrganizationsPage.tsx
 │   │   ├── ProfilePage.tsx
-│   │   └── TrustShieldPage.tsx
+│   │   ├── TrustShieldPage.tsx
+│   │   └── WarRoomPage.tsx
 │   ├── stores/           # Zustand state stores
 │   │   ├── authStore.ts
 │   │   └── organizationStore.ts
@@ -149,6 +151,7 @@ The application includes the following routes:
 
 - `/login` - Login page (public)
 - `/dashboard` - TiQology Consumer Home Dashboard (protected)
+- `/war-room` - War Room deployment tracker dashboard (protected)
 - `/alerts` - Alerts & Notifications Center (protected)
 - `/trustshield` - TrustShield Lite security module (protected, requires 'security' role)
 - `/profile` - User profile and preferences (protected)
@@ -211,6 +214,32 @@ To test role-based protection:
 - Login with any other email to see the access restriction message when attempting to access `/trustshield`
 
 ## Modules
+
+### War Room - Phase 3 Deployment Tracker
+
+The War Room (`/war-room`) provides a real-time deployment tracker dashboard for monitoring the status of all TiQology SuperApp modules and features. This is a frontend-only implementation for demonstration purposes.
+
+**Features:**
+- View deployment status of all main packs and modules (Consumer Dashboard, BookIt, Money Engine 2.0, Voice Engine, TQTV, Creator Studio, Quad-Core, etc.)
+- Dashboard statistics showing total modules, live deployments, in-progress work, planned features, and modules needing backend
+- Status badges for each module (Live, In Progress, Planned, Needs Backend)
+- Category classification (Core, Marketplace, Finance, AI, Media, Content, Infrastructure, Security, Enterprise, Gamification, Social)
+- Direct navigation to live modules via route links
+- Responsive grid layout (1 column on mobile, 2-3 columns on desktop)
+
+**Components:**
+- `WarRoomPage.tsx` - Main War Room dashboard page component
+
+**Mock Data:**
+The module uses mock data defined in `/src/mocks/warRoomMock.ts` containing 15 sample modules with fields including:
+- Module name and description
+- SPA route (if exists)
+- Deployment status (Live, In Progress, Planned, Needs Backend)
+- Category classification
+- Helper functions for filtering and status counts
+
+**Note:**
+This dashboard is currently frontend-only and uses mock status entries. It can be wired to backend APIs or GitHub signals for real-time deployment tracking in the future.
 
 ### BookIt Services Marketplace
 
@@ -375,6 +404,7 @@ The application currently uses mock data for demonstration purposes:
   - Upcoming events and tasks
   - System alerts and notifications
   - Special deals and feature modules
+- **War Room**: 15 mock modules from `/src/mocks/warRoomMock.ts` with deployment status tracking
 - **Alerts Center**: 9 sample alerts from `/src/mocks/alertsMock.ts` across multiple categories
 - **TrustShield**: Security data from `/src/mocks/trustShieldMock.ts` including threats and insights
 - **Profile**: User profile and preferences from `/src/mocks/profileMock.ts`
