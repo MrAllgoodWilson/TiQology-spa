@@ -11,10 +11,11 @@ import EnterprisePage from './pages/EnterprisePage';
 import WarRoomPage from './pages/WarRoomPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
+import OrganizationDetailPage from './pages/OrganizationDetailPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename='/TiQology-spa'>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
@@ -28,6 +29,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="organizations" element={<OrganizationsPage />} />
+          <Route path="organizations/:id" element={<OrganizationDetailPage />} />
           <Route path="bookit" element={<BookItPage />} />
           <Route path="alerts" element={<AlertsPage />} />
           <Route path="war-room" element={<WarRoomPage />} />

@@ -1,8 +1,13 @@
+import { useEffect } from 'react';
 import { useOrganizationStore } from '../stores/organizationStore';
+import { Link } from 'react-router-dom';
 
 export default function OrganizationsPage() {
-  const { organizations, selectedOrganization, selectOrganization } = useOrganizationStore();
+  const { organizations, selectedOrganization, selectOrganization, fetchOrganizations } = useOrganizationStore();
 
+  useEffect(() => {
+    fetchOrganizations();
+  }, [])
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -78,7 +83,7 @@ export default function OrganizationsPage() {
               ></path>
             </svg>
             <span>
-              You have selected <strong>{selectedOrganization.name}</strong>
+              You have selected <strong>{selectedOrganization.name}</strong>&nbsp;&nbsp;<span className='text-white underline'><Link to={`/organizations/${selectedOrganization.id}`}>view details</Link></span>
             </span>
           </div>
         </div>

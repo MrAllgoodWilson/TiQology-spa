@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import axios from 'axios';
+import { persist } from 'zustand/middleware';
 
 interface User {
   id: string;
@@ -9,54 +11,71 @@ interface User {
 
 interface AuthState {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   hasRole: (role: string) => boolean;
   isSecurity: () => boolean;
   isEnterpriseAdmin: () => boolean;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  user: null,
-  isAuthenticated: false,
-  login: (email: string, password: string) => {
-    // Mock login - in real app this would call an API
-    // Password validation would happen here
-    // Demo: users with "security" in email get security role
-    // Demo: users with "owner" or "admin" in email get enterprise access
-    const isSecurity = email.toLowerCase().includes('security');
-    const isOwner = email.toLowerCase().includes('owner');
-    const isAdmin = email.toLowerCase().includes('admin');
-    
-    const roles = ['user'];
-    if (isSecurity) roles.push('security');
-    if (isOwner) roles.push('owner');
-    if (isAdmin && !isOwner) roles.push('admin');
-    
-    const mockUser: User = {
-      id: '1',
-      email,
-      name: email.split('@')[0],
-      roles,
-    };
-    // In production: validate password against backend
-    console.log('Mock login with password:', password ? '***' : '');
-    set({ user: mockUser, isAuthenticated: true });
-  },
-  logout: () => {
-    set({ user: null, isAuthenticated: false });
-  },
-  hasRole: (role: string) => {
-    const { user } = get();
-    return user?.roles?.includes(role) ?? false;
-  },
-  isSecurity: () => {
-    const { hasRole } = get();
-    return hasRole('security');
-  },
-  isEnterpriseAdmin: () => {
-    const { hasRole } = get();
-    return hasRole('owner') || hasRole('admin');
-  },
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      isAuthenticated: false,
+      token: '',
+      login: async (email: string, password: string) => {
+        // Mock login - in real app this would call an API
+        // Password validation would happen here
+        // Demo: users with "security" in email get security role
+        // Demo: users with "owner" or "admin" in email get enterprise access
+        const isSecurity = email.toLowerCase().includes('security');
+        const isOwner = email.toLowerCase().includes('owner');
+        const isAdmin = email.toLowerCase().includes('admin');
+        
+        const roles = ['user'];
+        if (isSecurity) roles.push('security');
+        if (isOwner) roles.push('owner');
+        if (isAdmin && !isOwner) roles.push('admin');
+        
+        // const mockUser: User = {
+        //   id: '1',
+        //   email,
+        //   name: email.split('@')[0],
+        //   roles,
+        // };
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`, { email: email, password: password });
+        const { user, token } = response.data;
+
+        // In production: validate password against backend
+        // console.log('Mock login with password:', password ? '***' : '');
+        localStorage.setItem('token', token);
+        set({ user: user, isAuthenticated: true, token: token });
+        return user;
+      },
+      logout: () => {
+        set({ user: null, isAuthenticated: false, token: null });
+      },
+      hasRole: (role: string) => {
+        const { user } = get();
+        return user?.roles?.includes(role) ?? false;
+      },
+      isSecurity: () => {
+        const { hasRole } = get();
+        return hasRole('security');
+      },
+      isEnterpriseAdmin: () => {
+        const { hasRole } = get();
+        return hasRole('owner') || hasRole('admin');
+      },
+    }),{
+      name: "session-store",
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  ));

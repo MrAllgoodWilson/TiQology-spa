@@ -1,17 +1,19 @@
-import type { UpcomingData } from '../../mocks/consumerDashboardMock';
+import type { Snapshot } from '../../stores/snapshotStore';
 
-interface UpcomingCardProps {
-  data: UpcomingData;
+interface Props {
+  data: Snapshot;
 }
 
-export default function UpcomingCard({ data }: UpcomingCardProps) {
+export default function UpcomingCard({ data }: Props) {
+  const { events } = data;
+
   const getEventIcon = (type: string) => {
     switch (type) {
-      case 'event':
+      case 'meeting':
         return '📅';
-      case 'task':
+      case 'training':
         return '✅';
-      case 'reminder':
+      case 'game':
         return '🔔';
       default:
         return '📌';
@@ -34,36 +36,36 @@ export default function UpcomingCard({ data }: UpcomingCardProps) {
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title">
-          Upcoming 📆
+        <h2 className="card-title text-2xl font-extrabold">
+          Events 📆
         </h2>
 
         <div className="space-y-3 mt-4">
-          {data.events.map((event) => (
+          {events.map((event) => (
             <div
               key={event.id}
               className="flex items-start gap-3 p-3 border border-base-300 rounded-lg hover:bg-base-200 transition-colors"
             >
-              <span className="text-2xl">{getEventIcon(event.type)}</span>
+              <span className="text-2xl">{getEventIcon(event.event_type)}</span>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-semibold text-sm">{event.title}</h3>
-                  <div className={`badge badge-sm ${getEventBadgeColor(event.type)}`}>
-                    {event.type}
+                  <div className={`badge badge-sm ${getEventBadgeColor(event.event_type)}`}>
+                    {event.event_type}
                   </div>
                 </div>
                 <p className="text-xs text-base-content/70">
-                  {new Date(event.date).toLocaleDateString()}
-                  {event.time && ` at ${event.time}`}
+                  {new Date(event.start_time).toLocaleDateString()}
+                  {event.start_time && ` at ${event.start_time}`}
                 </p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="card-actions justify-end mt-4">
+        {/* <div className="card-actions justify-end mt-4">
           <button className="btn btn-primary btn-sm">View Calendar</button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

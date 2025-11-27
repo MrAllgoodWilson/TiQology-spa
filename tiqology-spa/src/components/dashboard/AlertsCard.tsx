@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import type { AlertsData } from '../../mocks/consumerDashboardMock';
+import type { Snapshot } from '../../stores/snapshotStore';
 
-interface AlertsCardProps {
-  data: AlertsData;
+interface Props {
+  data: Snapshot;
 }
 
-export default function AlertsCard({ data }: AlertsCardProps) {
+export default function AlertsCard({ data }: Props) {
+  const { tasks } = data;
   const getAlertClass = (type: string) => {
     switch (type) {
       case 'success':
@@ -38,36 +39,37 @@ export default function AlertsCard({ data }: AlertsCardProps) {
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
-          Alerts 🔔
+          Tasks 🔔
         </h2>
 
         <div className="space-y-3 mt-4">
-          {data.alerts.map((alert) => (
+          {tasks.map((alert) => (
             <div
               key={alert.id}
-              className={`alert ${getAlertClass(alert.type)}`}
+              className={`alert`}
             >
-              <span className="text-xl">{getAlertIcon(alert.type)}</span>
+              <span className="text-xl">{getAlertIcon(alert.priority)}</span>
               <div className="flex-1">
-                <p className="text-sm">{alert.message}</p>
+                <p className="text-sm font-bold">{alert.title}</p>
                 <p className="text-xs opacity-70 mt-1">
-                  {new Date(alert.timestamp).toLocaleString()}
+                  <span>Due Date: </span>
+                  {new Date(alert.due_date).toLocaleString()}
                 </p>
               </div>
-              {alert.actionLabel && (
+              {/* {alert.actionLabel && (
                 <button className="btn btn-sm btn-ghost">
                   {alert.actionLabel}
                 </button>
-              )}
+              )} */}
             </div>
           ))}
         </div>
 
-        <div className="card-actions justify-end mt-4">
+        {/* <div className="card-actions justify-end mt-4">
           <Link to="/alerts" className="btn btn-primary btn-sm">
             View All Alerts
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
