@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import type { Snapshot } from '../../stores/snapshotStore';
 
 interface Props {
@@ -7,19 +6,6 @@ interface Props {
 
 export default function AlertsCard({ data }: Props) {
   const { tasks } = data;
-  const getAlertClass = (type: string) => {
-    switch (type) {
-      case 'success':
-        return 'alert-success';
-      case 'warning':
-        return 'alert-warning';
-      case 'error':
-        return 'alert-error';
-      case 'info':
-      default:
-        return 'alert-info';
-    }
-  };
 
   const getAlertIcon = (type: string) => {
     switch (type) {

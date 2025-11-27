@@ -1,20 +1,9 @@
 import HeroCard from '../components/dashboard/HeroCard';
-import AskKikiCard from '../components/dashboard/AskKikiCard';
-import MissionsCard from '../components/dashboard/PostsCard';
 import MoneySnapshotCard from '../components/dashboard/MoneySnapshotCard';
-import QuickActionsCard from '../components/dashboard/QuickActionsCard';
 import UpcomingCard from '../components/dashboard/UpcomingCard';
 import AlertsCard from '../components/dashboard/AlertsCard';
-import DealsAndModulesSection from '../components/dashboard/DealsAndModulesSection';
 import {
   mockHeroData,
-  mockAskKikiData,
-  mockMissionsData,
-  mockMoneySnapshot,
-  mockQuickActionsData,
-  mockUpcomingData,
-  mockAlertsData,
-  mockDealsAndModulesData,
 } from '../mocks/consumerDashboardMock';
 import { useSnapshotStore } from '../stores/snapshotStore';
 import { useEffect } from 'react';
