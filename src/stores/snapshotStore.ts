@@ -1,8 +1,6 @@
 import { create } from "zustand";
-import axios from "axios";
-
+import { getDashboardSnapshot } from "../services/apiClient";
 import type { Organization } from "./organizationStore";
-import { useAuthStore } from "./authStore";
 
 export interface Task {
   id: number,
@@ -58,20 +56,53 @@ export interface Snapshot {
 
 interface SnapshotState {
   snapshot: Snapshot | null,
+  loading: boolean;
+  error: string | null;
   setSnapshot: (snapshot: Snapshot) => void;
   fetchSnapshot: () => Promise<void>;
 }
 
 export const useSnapshotStore = create<SnapshotState>((set) => ({
   snapshot: null,
-  setSnapshot: (snapshot) => set({ snapshot: snapshot }),
+  loading: false,
+  error: null,
+  setSnapshot: (snapshot) => set({ snapshot }),
   fetchSnapshot: async () => {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/dashboard/snapshot`, {
-      headers: {
-        Authorization: `Bearer ${useAuthStore.getState().token}`
-      }
-    });
-    // console.log(response.data);
-    set({ snapshot: response.data });
+    set({ loading: true, error: null });
+    try {
+      const data = await getDashboardSnapshot();
+      set({ snapshot: data, loading: false, error: null });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load dashboard data';
+      console.error('Dashboard fetch error:', errorMessage);
+      
+      // Fallback to mock data structure
+      const mockSnapshot: Snapshot = {
+        organization: {
+          id: '0',
+          name: 'Demo Organization',
+          organization_type: 'consumer',
+          description: 'Using fallback data - API unavailable',
+          website: '',
+          email: '',
+          phone: '',
+          logo_url: '',
+          region_key: 'us',
+          active: true,
+          residency: 'us',
+          plan: 'free',
+          memberCount: 0
+        },
+        posts: [],
+        events: [],
+        tasks: []
+      };
+      
+      set({ 
+        snapshot: mockSnapshot, 
+        loading: false, 
+        error: `API Error: ${errorMessage}. Showing fallback data.` 
+      });
+    }
   }
 }))
