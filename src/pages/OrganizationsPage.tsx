@@ -7,7 +7,7 @@ export default function OrganizationsPage() {
 
   useEffect(() => {
     fetchOrganizations();
-  }, [])
+  }, [fetchOrganizations])
   
   return (
     <div className="p-6">

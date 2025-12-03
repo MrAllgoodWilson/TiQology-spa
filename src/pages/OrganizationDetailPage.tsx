@@ -10,7 +10,7 @@ export default function OrganizationDetailPage() {
 
   useEffect(() => {
     fetchOrganization(Number(id));
-  }, [id])
+  }, [id, fetchOrganization])
   return <div className="card bg-base-100 shadow-xl mt-10">
       <div className="card-body">
         <h2 className="card-title text-4xl font-extrabold">
