@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import { persist } from 'zustand/middleware';
+import { login as apiLogin } from '../services/apiClient';
 
 interface User {
   id: string;
@@ -46,14 +46,13 @@ export const useAuthStore = create<AuthState>()(
         //   name: email.split('@')[0],
         //   roles,
         // };
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`, { email: email, password: password });
-        const { user, token } = response.data;
+        const response = await apiLogin({ email, password });
+        const { user, token } = response;
 
         // In production: validate password against backend
         // console.log('Mock login with password:', password ? '***' : '');
         localStorage.setItem('token', token);
         set({ user: user, isAuthenticated: true, token: token });
-        return user;
       },
       logout: () => {
         set({ user: null, isAuthenticated: false, token: null });
