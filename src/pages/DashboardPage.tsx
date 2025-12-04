@@ -11,7 +11,7 @@ import PostsCard from '../components/dashboard/PostsCard';
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
-function logDev(...args: any[]) {
+function logDev(...args: unknown[]) {
   if (isDevelopment) {
     console.log('[DashboardPage]', ...args);
   }

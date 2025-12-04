@@ -4,13 +4,13 @@ import { login as apiLogin } from '../services/apiClient';
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
-function logDev(...args: any[]) {
+function logDev(...args: unknown[]) {
   if (isDevelopment) {
     console.log('[AuthStore]', ...args);
   }
 }
 
-function logErrorDev(...args: any[]) {
+function logErrorDev(...args: unknown[]) {
   if (isDevelopment) {
     console.error('[AuthStore]', ...args);
   }
@@ -49,7 +49,6 @@ export const useAuthStore = create<AuthState>()(
           localStorage.setItem('token', token);
           logDev('Login successful:', user.email, 'Roles:', user.roles);
           set({ user: user, isAuthenticated: true, token: token });
-          return user;
         } catch (error) {
           logErrorDev('Login failed:', error);
           throw error;
