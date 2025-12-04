@@ -3,11 +3,11 @@ import { useOrganizationStore } from '../stores/organizationStore';
 import { Link } from 'react-router-dom';
 
 export default function OrganizationsPage() {
-  const { organizations, selectedOrganization, selectOrganization, fetchOrganizations } = useOrganizationStore();
+  const { organizations, selectedOrganization, selectOrganization, fetchOrganizations, isLoading, error } = useOrganizationStore();
 
   useEffect(() => {
     fetchOrganizations();
-  }, [])
+  }, [fetchOrganizations])
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -15,7 +15,39 @@ export default function OrganizationsPage() {
         <p className="text-gray-600 mt-2">Manage your organizations</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {isLoading && (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="loading loading-spinner loading-lg"></div>
+            <p className="mt-4 text-gray-600">Loading organizations...</p>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 className="font-bold">Failed to load organizations</h3>
+            <div className="text-sm">{error}</div>
+          </div>
+          <button className="btn btn-sm" onClick={() => fetchOrganizations()}>Retry</button>
+        </div>
+      )}
+
+      {!isLoading && !error && organizations.length === 0 && (
+        <div className="alert alert-info mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>No organizations found. Create your first organization to get started.</span>
+        </div>
+      )}
+
+      {!isLoading && organizations.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {organizations.map((org) => (
           <div
             key={org.id}
@@ -45,6 +77,7 @@ export default function OrganizationsPage() {
           </div>
         ))}
       </div>
+      )}
 
       <div className="mt-6">
         <button className="btn btn-primary">

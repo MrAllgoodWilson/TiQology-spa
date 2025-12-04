@@ -2,6 +2,20 @@ const BASE_URL =
   import.meta.env.VITE_API_BASE_URL ??
   'https://helloworld-world-enterprise-rails-1.onrender.com';
 
+const isDevelopment = import.meta.env.MODE === 'development';
+
+function logDev(...args: any[]) {
+  if (isDevelopment) {
+    console.log('[API Client]', ...args);
+  }
+}
+
+function logErrorDev(...args: any[]) {
+  if (isDevelopment) {
+    console.error('[API Client]', ...args);
+  }
+}
+
 function getToken(): string | null {
   return localStorage.getItem('token');
 }
@@ -21,9 +35,31 @@ function getHeaders(includeAuth: boolean = true): HeadersInit {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
+  logDev('Response received:', {
+    url: response.url,
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok
+  });
+
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(errorBody || response.statusText);
+    let errorBody = '';
+    try {
+      errorBody = await response.text();
+    } catch (e) {
+      logErrorDev('Failed to read error response:', e);
+    }
+    
+    const errorMessage = `HTTP ${response.status}: ${errorBody || response.statusText}`;
+    logErrorDev('API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+      body: errorBody,
+      headers: Object.fromEntries(response.headers.entries())
+    });
+    
+    throw new Error(errorMessage);
   }
   return response.json() as Promise<T>;
 }
@@ -129,6 +165,7 @@ export interface DashboardSnapshot {
 }
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
+  logDev('POST /api/v1/auth/login', { email: payload.email });
   const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: getHeaders(false),
@@ -140,6 +177,7 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 export async function register(
   payload: RegisterPayload
 ): Promise<RegisterResponse> {
+  logDev('POST /api/v1/auth/register', { email: payload.email });
   const response = await fetch(`${BASE_URL}/api/v1/auth/register`, {
     method: 'POST',
     headers: getHeaders(false),
@@ -149,6 +187,7 @@ export async function register(
 }
 
 export async function getOrganizations(): Promise<OrganizationsResponse> {
+  logDev('GET /api/v1/organizations');
   const response = await fetch(`${BASE_URL}/api/v1/organizations`, {
     method: 'GET',
     headers: getHeaders(),
@@ -157,6 +196,7 @@ export async function getOrganizations(): Promise<OrganizationsResponse> {
 }
 
 export async function getOrganization(id: number): Promise<Organization> {
+  logDev(`GET /api/v1/organizations/${id}`);
   const response = await fetch(`${BASE_URL}/api/v1/organizations/${id}`, {
     method: 'GET',
     headers: getHeaders(),
@@ -165,9 +205,24 @@ export async function getOrganization(id: number): Promise<Organization> {
 }
 
 export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
-  const response = await fetch(`${BASE_URL}/api/v1/dashboard/snapshot`, {
-    method: 'GET',
-    headers: getHeaders(),
+  const url = `${BASE_URL}/api/v1/dashboard/snapshot`;
+  logDev('GET /api/v1/dashboard/snapshot', {
+    url,
+    baseUrl: BASE_URL,
+    hasToken: !!getToken()
   });
-  return handleResponse<DashboardSnapshot>(response);
+  
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse<DashboardSnapshot>(response);
+  } catch (error) {
+    logErrorDev('Failed to fetch dashboard snapshot:', error);
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to API server. Please check if the server is running.');
+    }
+    throw error;
+  }
 }

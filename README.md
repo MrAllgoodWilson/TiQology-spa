@@ -33,6 +33,16 @@ A modern, responsive single-page application built with Vite, React, TypeScript,
 - Node.js 18+ 
 - npm 9+
 
+### Environment Variables
+
+Create a `.env` file in the root directory and configure the following:
+
+```bash
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+For production (Vercel), set this environment variable in your Vercel dashboard to point to your Rails API.
+
 ### Installation
 
 1. Navigate to the project directory:
@@ -44,6 +54,8 @@ A modern, responsive single-page application built with Vite, React, TypeScript,
    ```bash
    npm install
    ```
+
+3. Create a `.env` file with your API base URL (see Environment Variables above)
 
 ### Development
 
@@ -357,24 +369,89 @@ The module uses mock data defined in `/src/mocks/profileMock.ts` containing:
 
 Manages user authentication state and role-based access control:
 - `user` - Current user object with roles array
+- `token` - JWT authentication token
 - `isAuthenticated` - Authentication status
-- `login()` - Login function (assigns roles based on email)
+- `login()` - Login function (calls backend API)
 - `logout()` - Logout function
 - `hasRole(role: string)` - Check if user has a specific role
 - `isSecurity()` - Selector to check if user has security role
 
-**Role Assignment (Mock):**
-- Users with "security" in their email receive: `['user', 'security', 'admin']`
-- All other users receive: `['user']`
-
 ### Organization Store (`organizationStore.ts`)
 
-Manages organization data:
+Manages organization data with backend integration:
 - `organizations` - List of organizations
+- `organization` - Single organization details
 - `selectedOrganization` - Currently selected organization
-- `setOrganizations()` - Update organizations list
+- `isLoading` - Loading state for API calls
+- `error` - Error message from failed API calls
+- `fetchOrganizations()` - Fetch organizations from backend API
+- `fetchOrganization(id)` - Fetch single organization details
 - `selectOrganization()` - Select an organization
 - `addOrganization()` - Add a new organization
+- `setOrganizations()` - Update organizations list
+
+### Snapshot Store (`snapshotStore.ts`)
+
+Manages dashboard snapshot data with backend integration:
+- `snapshot` - Dashboard snapshot data (organization, posts, events, tasks)
+- `isLoading` - Loading state for API calls
+- `error` - Error message from failed API calls
+- `fetchSnapshot()` - Fetch dashboard snapshot from backend API
+- `setSnapshot()` - Update snapshot data
+
+## API Integration
+
+The application integrates with a Rails backend API through a centralized API client (`src/services/apiClient.ts`):
+
+### Centralized API Client
+
+All API calls go through the centralized client which handles:
+- Base URL configuration via `VITE_API_BASE_URL` environment variable
+- Authentication headers (JWT Bearer tokens)
+- Response parsing and error handling
+- Consistent error messages
+
+### API Endpoints
+
+The following endpoints are currently integrated:
+
+**Authentication:**
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration
+
+**Organizations:**
+- `GET /api/v1/organizations` - Fetch all organizations
+- `GET /api/v1/organizations/:id` - Fetch single organization
+
+**Dashboard:**
+- `GET /api/v1/dashboard/snapshot` - Fetch dashboard snapshot (organization, posts, events, tasks)
+
+### Error Handling
+
+All API calls include proper error handling:
+- Loading states displayed during API calls
+- User-friendly error messages shown on failures
+- Retry buttons available for failed requests
+- Console logging for debugging
+- No infinite loading states
+
+### Pages with API Integration
+
+The following pages connect to the backend API:
+
+1. **LoginPage** - Authenticates users via `/api/v1/auth/login`
+2. **DashboardPage** - Fetches snapshot data via `/api/v1/dashboard/snapshot`
+3. **OrganizationsPage** - Fetches organizations via `/api/v1/organizations`
+4. **OrganizationDetailPage** - Fetches single organization via `/api/v1/organizations/:id`
+
+### Pages Using Mock Data
+
+The following pages still use mock data and do not make API calls:
+- **War Room** - Uses `/src/mocks/warRoomMock.ts`
+- **Alerts** - Uses `/src/mocks/alertsMock.ts`
+- **BookIt** - Uses `/src/mocks/bookItMock.ts`
+- **TrustShield** - Uses `/src/mocks/trustShieldMock.ts`
+- **Profile** - Uses `/src/mocks/profileMock.ts`
 
 ## Styling
 
@@ -391,39 +468,39 @@ Available DaisyUI themes:
 
 ### Mock Data
 
-The application currently uses mock data for demonstration purposes:
-- Login accepts any email/password combination
-- Organizations are pre-populated with sample data
-- **Role Assignment**: Users with "security" in their email get security role access
-- **Consumer Dashboard**: All dashboard data is sourced from `/src/mocks/consumerDashboardMock.ts` including:
-  - Hero greeting and user information
-  - Kiki AI assistant suggestions
-  - Active missions with progress tracking
-  - Financial snapshot (balance, rewards, spending)
-  - Quick action shortcuts
-  - Upcoming events and tasks
-  - System alerts and notifications
-  - Special deals and feature modules
+Some pages in the application still use mock data for demonstration purposes:
+
 - **War Room**: 15 mock modules from `/src/mocks/warRoomMock.ts` with deployment status tracking
 - **Alerts Center**: 9 sample alerts from `/src/mocks/alertsMock.ts` across multiple categories
 - **TrustShield**: Security data from `/src/mocks/trustShieldMock.ts` including threats and insights
 - **Profile**: User profile and preferences from `/src/mocks/profileMock.ts`
 - **BookIt**: 12 mock service providers from `/src/mocks/bookItMock.ts`
 
-**Note**: All modules use 100% mock data and do not make any API calls.
+**Backend Integration:**
+
+The following features are connected to the Rails backend API:
+- **Login/Registration**: Real authentication with JWT tokens
+- **Dashboard**: Fetches organization, posts, events, and tasks from `/api/v1/dashboard/snapshot`
+- **Organizations**: Fetches organization list and details from `/api/v1/organizations`
+
+All backend-connected pages include:
+- Proper loading states
+- Error handling with user-friendly messages
+- Retry functionality on failures
 
 ### Future Enhancements
 
-- Connect to real backend APIs
-- Implement actual authentication with JWT tokens
-- Add form validation
-- Expand organization management features
-- Implement real-time notifications
+- Connect remaining pages to backend APIs (War Room, Alerts, BookIt, TrustShield, Profile)
+- Add form validation for login and registration
+- Expand organization management features (create, update, delete)
+- Implement real-time notifications via WebSockets
 - Add functional filtering and search to BookIt marketplace
-- Implement real booking functionality
+- Implement real booking functionality for BookIt
 - Enhance TrustShield with real security scanning
 - Add two-factor authentication
 - Implement data persistence for user preferences
+- Add pagination for large datasets
+- Implement caching strategies for better performance
 
 ## Scripts Reference
 
