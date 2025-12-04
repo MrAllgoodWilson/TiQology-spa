@@ -1,6 +1,19 @@
-import axios from 'axios';
 import { create } from 'zustand';
-import { useAuthStore } from './authStore';
+import { getOrganizations, getOrganization } from '../services/apiClient';
+
+const isDevelopment = import.meta.env.MODE === 'development';
+
+function logDev(...args: unknown[]) {
+  if (isDevelopment) {
+    console.log('[OrganizationStore]', ...args);
+  }
+}
+
+function logErrorDev(...args: unknown[]) {
+  if (isDevelopment) {
+    console.error('[OrganizationStore]', ...args);
+  }
+}
 
 export interface Organization {
   id: string;
@@ -22,6 +35,8 @@ interface OrganizationState {
   organizations: Organization[];
   organization: Organization | null;
   selectedOrganization: Organization | null;
+  isLoading: boolean;
+  error: string | null;
   setOrganizations: (organizations: Organization[]) => void;
   selectOrganization: (organization: Organization) => void;
   addOrganization: (organization: Organization) => void;
@@ -34,6 +49,8 @@ export const useOrganizationStore = create<OrganizationState>((set) => ({
   organizations: [],
   organization: null,
   selectedOrganization: null,
+  isLoading: false,
+  error: null,
   setOrganizations: (organizations) => set({ organizations }),
   selectOrganization: (organization) => set({ selectedOrganization: organization }),
   addOrganization: (organization) =>
@@ -41,22 +58,30 @@ export const useOrganizationStore = create<OrganizationState>((set) => ({
       organizations: [...state.organizations, organization],
     })),
   fetchOrganizations: async () => {
-    console.log(import.meta.env.VITE_API_BASE_URL);
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/organizations`, {
-      headers: {
-        Authorization: `Bearer ${useAuthStore.getState().token}`
-      }
-    })
-    set({ organizations: response.data.organizations })
+    set({ isLoading: true, error: null });
+    logDev('Fetching organizations...');
+    try {
+      const data = await getOrganizations();
+      logDev('Organizations loaded:', data.organizations?.length, 'organizations');
+      set({ organizations: data.organizations, isLoading: false, error: null });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load organizations';
+      logErrorDev('Organizations fetch error:', err);
+      set({ organizations: [], isLoading: false, error: errorMessage });
+    }
   },
   fetchOrganization: async (id: number) => {
-    console.log(import.meta.env.VITE_API_BASE_URL);
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/organizations/${id}`, {
-      headers: {
-        Authorization: `Bearer ${useAuthStore.getState().token}`
-      }
-    })
-    set({ organization: response.data })
+    set({ isLoading: true, error: null });
+    logDev(`Fetching organization ${id}...`);
+    try {
+      const data = await getOrganization(id);
+      logDev('Organization loaded:', data.name);
+      set({ organization: data, isLoading: false, error: null });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load organization';
+      logErrorDev('Organization fetch error:', err);
+      set({ organization: null, isLoading: false, error: errorMessage });
+    }
   },
   setOrganization: (organization) => set({ organization: organization })
 }));
