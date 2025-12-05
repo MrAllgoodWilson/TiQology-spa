@@ -3,12 +3,11 @@ import { useOrganizationStore } from '../stores/organizationStore';
 import { Link } from 'react-router-dom';
 
 export default function OrganizationsPage() {
-  const { organizations, selectedOrganization, selectOrganization, fetchOrganizations, loading, error } = useOrganizationStore();
+  const { organizations, selectedOrganization, selectOrganization, fetchOrganizations, isLoading, error } = useOrganizationStore();
 
   useEffect(() => {
     fetchOrganizations();
   }, [fetchOrganizations])
-  
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -16,40 +15,38 @@ export default function OrganizationsPage() {
         <p className="text-gray-600 mt-2">Manage your organizations</p>
       </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3 flex-1">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-            <button 
-              onClick={() => fetchOrganizations()} 
-              className="ml-3 text-sm font-medium text-red-700 hover:text-red-600"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Loading State */}
-      {loading && (
+      {isLoading && (
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading organizations...</p>
+            <div className="loading loading-spinner loading-lg"></div>
+            <p className="mt-4 text-gray-600">Loading organizations...</p>
           </div>
         </div>
       )}
 
-      {/* Organizations Grid */}
-      {!loading && (
+      {error && (
+        <div className="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 className="font-bold">Failed to load organizations</h3>
+            <div className="text-sm">{error}</div>
+          </div>
+          <button className="btn btn-sm" onClick={() => fetchOrganizations()}>Retry</button>
+        </div>
+      )}
+
+      {!isLoading && !error && organizations.length === 0 && (
+        <div className="alert alert-info mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>No organizations found. Create your first organization to get started.</span>
+        </div>
+      )}
+
+      {!isLoading && organizations.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {organizations.map((org) => (
           <div

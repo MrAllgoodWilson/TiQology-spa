@@ -2,6 +2,20 @@ import { create } from "zustand";
 import { getDashboardSnapshot } from "../services/apiClient";
 import type { Organization } from "./organizationStore";
 
+const isDevelopment = import.meta.env.MODE === 'development';
+
+function logDev(...args: unknown[]) {
+  if (isDevelopment) {
+    console.log('[SnapshotStore]', ...args);
+  }
+}
+
+function logErrorDev(...args: unknown[]) {
+  if (isDevelopment) {
+    console.error('[SnapshotStore]', ...args);
+  }
+}
+
 export interface Task {
   id: number,
   organization_id: number,
@@ -56,53 +70,54 @@ export interface Snapshot {
 
 interface SnapshotState {
   snapshot: Snapshot | null,
-  loading: boolean;
-  error: string | null;
+  isLoading: boolean,
+  error: string | null,
   setSnapshot: (snapshot: Snapshot) => void;
   fetchSnapshot: () => Promise<void>;
 }
 
-export const useSnapshotStore = create<SnapshotState>((set) => ({
+export const useSnapshotStore = create<SnapshotState>((set, get) => ({
   snapshot: null,
-  loading: false,
+  isLoading: false,
   error: null,
-  setSnapshot: (snapshot) => set({ snapshot }),
+  setSnapshot: (snapshot) => set({ snapshot: snapshot }),
   fetchSnapshot: async () => {
-    set({ loading: true, error: null });
+    // Prevent duplicate fetches
+    if (get().isLoading) {
+      logDev('Fetch already in progress, skipping...');
+      return;
+    }
+    
+    logDev('Fetching dashboard snapshot...');
+    set({ isLoading: true, error: null });
     try {
       const data = await getDashboardSnapshot();
-      set({ snapshot: data, loading: false, error: null });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load dashboard data';
-      console.error('Dashboard fetch error:', errorMessage);
-      
-      // Fallback to mock data structure
-      const mockSnapshot: Snapshot = {
-        organization: {
-          id: '0',
-          name: 'Demo Organization',
-          organization_type: 'consumer',
-          description: 'Using fallback data - API unavailable',
-          website: '',
-          email: '',
-          phone: '',
-          logo_url: '',
-          region_key: 'us',
-          active: true,
-          residency: 'us',
-          plan: 'free',
-          memberCount: 0
-        },
-        posts: [],
-        events: [],
-        tasks: []
-      };
-      
-      set({ 
-        snapshot: mockSnapshot, 
-        loading: false, 
-        error: `API Error: ${errorMessage}. Showing fallback data.` 
+      logDev('Dashboard snapshot loaded successfully:', {
+        organization: data.organization?.name,
+        posts: data.posts?.length,
+        events: data.events?.length,
+        tasks: data.tasks?.length
       });
+      set({ snapshot: data, isLoading: false, error: null });
+    } catch (err) {
+      logErrorDev('Dashboard fetch error:', err);
+      let errorMessage = 'Failed to load dashboard data';
+      
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        // Check for common issues
+        if (err.message.includes('fetch')) {
+          errorMessage = 'Unable to connect to server. Please check your internet connection.';
+        } else if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+          errorMessage = 'Your session has expired. Please log in again.';
+        } else if (err.message.includes('404')) {
+          errorMessage = 'Dashboard endpoint not found. The API may not be configured correctly.';
+        } else if (err.message.includes('500')) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+      }
+      
+      set({ snapshot: null, isLoading: false, error: errorMessage });
     }
   }
 }))
