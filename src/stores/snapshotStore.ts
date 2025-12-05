@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { getDashboardSnapshot } from "../services/apiClient";
 import type { Organization } from "./organizationStore";
-<<<<<<< HEAD
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
@@ -16,8 +15,6 @@ function logErrorDev(...args: unknown[]) {
     console.error('[SnapshotStore]', ...args);
   }
 }
-=======
->>>>>>> origin/main
 
 export interface Task {
   id: number,
@@ -73,20 +70,14 @@ export interface Snapshot {
 
 interface SnapshotState {
   snapshot: Snapshot | null,
-<<<<<<< HEAD
   isLoading: boolean,
   error: string | null,
-=======
-  loading: boolean;
-  error: string | null;
->>>>>>> origin/main
   setSnapshot: (snapshot: Snapshot) => void;
   fetchSnapshot: () => Promise<void>;
 }
 
 export const useSnapshotStore = create<SnapshotState>((set, get) => ({
   snapshot: null,
-<<<<<<< HEAD
   isLoading: false,
   error: null,
   setSnapshot: (snapshot) => set({ snapshot: snapshot }),
@@ -127,47 +118,6 @@ export const useSnapshotStore = create<SnapshotState>((set, get) => ({
       }
       
       set({ snapshot: null, isLoading: false, error: errorMessage });
-=======
-  loading: false,
-  error: null,
-  setSnapshot: (snapshot) => set({ snapshot }),
-  fetchSnapshot: async () => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getDashboardSnapshot();
-      set({ snapshot: data, loading: false, error: null });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load dashboard data';
-      console.error('Dashboard fetch error:', errorMessage);
-      
-      // Fallback to mock data structure
-      const mockSnapshot: Snapshot = {
-        organization: {
-          id: '0',
-          name: 'Demo Organization',
-          organization_type: 'consumer',
-          description: 'Using fallback data - API unavailable',
-          website: '',
-          email: '',
-          phone: '',
-          logo_url: '',
-          region_key: 'us',
-          active: true,
-          residency: 'us',
-          plan: 'free',
-          memberCount: 0
-        },
-        posts: [],
-        events: [],
-        tasks: []
-      };
-      
-      set({ 
-        snapshot: mockSnapshot, 
-        loading: false, 
-        error: `API Error: ${errorMessage}. Showing fallback data.` 
-      });
->>>>>>> origin/main
     }
   }
 }))
