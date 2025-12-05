@@ -11,6 +11,7 @@ export default function OrganizationDetailPage() {
   useEffect(() => {
     fetchOrganization(Number(id));
   }, [id, fetchOrganization])
+<<<<<<< HEAD
 
   if (isLoading) {
     return (
@@ -53,6 +54,8 @@ export default function OrganizationDetailPage() {
     );
   }
 
+=======
+>>>>>>> origin/main
   return <div className="card bg-base-100 shadow-xl mt-10">
       <div className="card-body">
         <h2 className="card-title text-4xl font-extrabold">
