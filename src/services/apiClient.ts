@@ -4,13 +4,13 @@ const BASE_URL =
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
-function logDev(...args: any[]) {
+function logDev(...args: unknown[]) {
   if (isDevelopment) {
     console.log('[API Client]', ...args);
   }
 }
 
-function logErrorDev(...args: any[]) {
+function logErrorDev(...args: unknown[]) {
   if (isDevelopment) {
     console.error('[API Client]', ...args);
   }

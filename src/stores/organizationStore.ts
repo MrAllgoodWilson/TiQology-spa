@@ -3,13 +3,13 @@ import { getOrganizations, getOrganization } from '../services/apiClient';
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
-function logDev(...args: any[]) {
+function logDev(...args: unknown[]) {
   if (isDevelopment) {
     console.log('[OrganizationStore]', ...args);
   }
 }
 
-function logErrorDev(...args: any[]) {
+function logErrorDev(...args: unknown[]) {
   if (isDevelopment) {
     console.error('[OrganizationStore]', ...args);
   }

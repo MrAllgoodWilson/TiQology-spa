@@ -4,13 +4,13 @@ import type { Organization } from "./organizationStore";
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
-function logDev(...args: any[]) {
+function logDev(...args: unknown[]) {
   if (isDevelopment) {
     console.log('[SnapshotStore]', ...args);
   }
 }
 
-function logErrorDev(...args: any[]) {
+function logErrorDev(...args: unknown[]) {
   if (isDevelopment) {
     console.error('[SnapshotStore]', ...args);
   }

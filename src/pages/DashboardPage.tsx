@@ -1,13 +1,9 @@
-import HeroCard from '../components/dashboard/HeroCard';
-import MoneySnapshotCard from '../components/dashboard/MoneySnapshotCard';
-import UpcomingCard from '../components/dashboard/UpcomingCard';
-import AlertsCard from '../components/dashboard/AlertsCard';
-import {
-  mockHeroData,
-} from '../mocks/consumerDashboardMock';
 import { useSnapshotStore } from '../stores/snapshotStore';
 import { useEffect } from 'react';
-import PostsCard from '../components/dashboard/PostsCard';
+import SystemHealthCard from '../components/dashboard/SystemHealthCard';
+import OrganizationsOverviewCard from '../components/dashboard/OrganizationsOverviewCard';
+import AlertsActivityCard from '../components/dashboard/AlertsActivityCard';
+import RoadToV01Card from '../components/dashboard/RoadToV01Card';
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
@@ -97,28 +93,42 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      {/* Hero Section - Full Width */}
-      <HeroCard data={mockHeroData} />
-
-      {/* Two Column Layout on Desktop, Stacked on Mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column */}
-        <div className="space-y-6">
-          <MoneySnapshotCard data={snapshot} />
-          {/* <QuickActionsCard data={mockQuickActionsData} /> */}
-          <PostsCard data={snapshot} />
-        </div>
-
-        {/* Right Column */}
-        <div className="space-y-6">
-          {/* <AskKikiCard data={mockAskKikiData} /> */}
-          <UpcomingCard data={snapshot} />
-          <AlertsCard data={snapshot} />
-        </div>
+      {/* Top Section - Title & Subtitle */}
+      <div className="mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-base-content">
+          TiQology Control Center
+        </h1>
+        <p className="text-base-content/70 mt-2">
+          High-level view of your organizations, alerts, and system status.
+        </p>
       </div>
 
-      {/* Deals and Modules Section - Full Width */}
-      {/* <DealsAndModulesSection data={mockDealsAndModulesData} /> */}
+      {/* Main Grid - 2x2 on desktop, stacked on mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* System Health Card */}
+        <SystemHealthCard 
+          snapshot={snapshot}
+          isLoading={isLoading}
+          error={error}
+        />
+
+        {/* Organizations Overview Card */}
+        <OrganizationsOverviewCard 
+          snapshot={snapshot}
+          isLoading={isLoading}
+          error={error}
+        />
+
+        {/* Alerts & Activity Card */}
+        <AlertsActivityCard 
+          snapshot={snapshot}
+          isLoading={isLoading}
+          error={error}
+        />
+
+        {/* Road to v0.1 Card */}
+        <RoadToV01Card />
+      </div>
     </div>
   );
 }
