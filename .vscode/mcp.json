@@ -1,0 +1,194 @@
+{
+	"servers": {
+		"io.github.github/github-mcp-server": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/",
+			"headers": {
+				"Authorization": "${input:Authorization}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.24.0"
+		},
+		"com.supabase/mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"--project-ref",
+				"${input:project-ref}",
+				"--read-only",
+				"${input:read-only}",
+				"--features",
+				"${input:features}",
+				"--api-url",
+				"${input:api-url}",
+				"@supabase/mcp-server-supabase@0.5.9"
+			],
+			"env": {
+				"SUPABASE_ACCESS_TOKEN": "${input:SUPABASE_ACCESS_TOKEN}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.5.9"
+		},
+		"com.stripe/mcp": {
+			"type": "http",
+			"url": "https://mcp.stripe.com",
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.2.4"
+		},
+		"io.github.hashicorp/terraform-mcp-server": {
+			"type": "stdio",
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"run",
+				"--rm",
+				"-i",
+				"-e",
+				"${input:e}",
+				"TFE_ADDRESS",
+				"-e",
+				"${input:e}",
+				"TFE_TOKEN",
+				"-e",
+				"${input:e}",
+				"ENABLE_TF_OPERATIONS",
+				"hashicorp/terraform-mcp-server:0.3.3",
+				"-e",
+				"TFE_ADDRESS",
+				"-e",
+				"TFE_TOKEN",
+				"-e",
+				"ENABLE_TF_OPERATIONS",
+				"docker.io/hashicorp/terraform-mcp-server:0.3.3"
+			],
+			"env": {
+				"TFE_ADDRESS": "${input:TFE_ADDRESS}",
+				"TFE_TOKEN": "${input:TFE_TOKEN}",
+				"ENABLE_TF_OPERATIONS": "${input:ENABLE_TF_OPERATIONS}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.3.3"
+		},
+		"huggingface/hf-mcp-server": {
+			"type": "http",
+			"url": "https://huggingface.co/mcp?login",
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.0.0"
+		},
+		"elastic/mcp-server-elasticsearch": {
+			"type": "stdio",
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e",
+				"$ES_URL",
+				"-e",
+				"$ES_API_KEY",
+				"docker.elastic.co/mcp/elasticsearch",
+				"stdio"
+			],
+			"env": {
+				"ES_URL": "${input:es_url}",
+				"ES_API_KEY": "${input:es_api_key}"
+			},
+			"gallery": "https://api.mcp.github.com",
+			"version": "1.0.0"
+		}
+	},
+	"inputs": [
+		{
+			"id": "Authorization",
+			"type": "promptString",
+			"description": "Authentication token (PAT or App token)",
+			"password": true
+		},
+		{
+			"id": "project-ref",
+			"type": "promptString",
+			"description": "Supabase project reference ID",
+			"password": false
+		},
+		{
+			"id": "read-only",
+			"type": "promptString",
+			"description": "Enable read-only mode",
+			"password": false
+		},
+		{
+			"id": "features",
+			"type": "promptString",
+			"description": "Comma-separated list of features to enable",
+			"password": false
+		},
+		{
+			"id": "api-url",
+			"type": "promptString",
+			"description": "Custom API URL",
+			"password": false
+		},
+		{
+			"id": "SUPABASE_ACCESS_TOKEN",
+			"type": "promptString",
+			"description": "Personal access token for Supabase API",
+			"password": true
+		},
+		{
+			"id": "e",
+			"type": "promptString",
+			"description": "Set an environment variable in the runtime",
+			"password": false
+		},
+		{
+			"id": "e",
+			"type": "promptString",
+			"description": "Set an environment variable in the runtime",
+			"password": false
+		},
+		{
+			"id": "e",
+			"type": "promptString",
+			"description": "Set an environment variable in the runtime",
+			"password": false
+		},
+		{
+			"id": "TFE_ADDRESS",
+			"type": "promptString",
+			"description": "HCP Terraform or Terraform Enterprise base URL.",
+			"password": false,
+			"default": "https://app.terraform.io"
+		},
+		{
+			"id": "TFE_TOKEN",
+			"type": "promptString",
+			"description": "HCP Terraform or Terraform Enterprise API token used to authenticate requests.",
+			"password": true
+		},
+		{
+			"id": "ENABLE_TF_OPERATIONS",
+			"type": "pickString",
+			"description": "Set to true to enable tools that execute Terraform operations requiring explicit approval.",
+			"password": false,
+			"default": "false",
+			"options": [
+				"true",
+				"false"
+			]
+		},
+		{
+			"id": "es_url",
+			"type": "promptString",
+			"description": "your elasticsearch url",
+			"password": false
+		},
+		{
+			"id": "es_api_key",
+			"type": "promptString",
+			"description": "your api key",
+			"password": true
+		}
+	]
+}
