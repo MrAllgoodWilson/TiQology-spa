@@ -9,6 +9,7 @@ import TrustShieldPage from './pages/TrustShieldPage';
 import ProfilePage from './pages/ProfilePage';
 import EnterprisePage from './pages/EnterprisePage';
 import WarRoomPage from './pages/WarRoomPage';
+import GhostLabPage from './pages/GhostLabPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 import OrganizationDetailPage from './pages/OrganizationDetailPage';
@@ -33,6 +34,7 @@ function App() {
           <Route path="bookit" element={<BookItPage />} />
           <Route path="alerts" element={<AlertsPage />} />
           <Route path="war-room" element={<WarRoomPage />} />
+          <Route path="ghost-lab" element={<GhostLabPage />} />
           <Route 
             path="trustshield" 
             element={

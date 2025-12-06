@@ -38,6 +38,14 @@ export default function Navbar() {
           </li>
           <li>
             <Link
+              to="/ghost-lab"
+              className={isActive('/ghost-lab') ? 'active' : ''}
+            >
+              👻 Ghost Lab
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/alerts"
               className={isActive('/alerts') ? 'active' : ''}
             >
@@ -65,48 +73,21 @@ export default function Navbar() {
             </li>
           )}
           <li>
-            <Link
-              to="/organizations"
-              className={isActive('/organizations') ? 'active' : ''}
-            >
-              Organizations
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/bookit"
-              className={isActive('/bookit') ? 'active' : ''}
-            >
-              BookIt
-            </Link>
+            <details>
+              <summary>
+                {user?.name || user?.email}
+              </summary>
+              <ul className="p-2 bg-base-100 rounded-t-none">
+                <li>
+                  <Link to="/profile">Profile</Link>
+                </li>
+                <li>
+                  <button onClick={logout}>Logout</button>
+                </li>
+              </ul>
+            </details>
           </li>
         </ul>
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-            <div className="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
-              <span className="text-lg font-bold">
-                {user?.name?.[0]?.toUpperCase() || 'U'}
-              </span>
-            </div>
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li className="menu-title">
-              <span>{user?.email}</span>
-            </li>
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a onClick={logout}>Logout</a>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   );
