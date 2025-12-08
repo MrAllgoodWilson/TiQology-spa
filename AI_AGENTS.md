@@ -186,7 +186,7 @@ Sage offers high-level strategic guidance:
 import { askSage } from '@/lib/aiClient';
 
 const response = await askSage(
-  'Generate a comprehensive strategic plan for Q1 2026',
+  'Generate a comprehensive strategic plan for the next quarter',
   { organizationId: org.id, goals: userGoals }
 );
 ```
@@ -305,7 +305,7 @@ import { streamAIRequest } from '@/lib/aiClient';
 
 const stream = streamAIRequest({
   role: 'sage',
-  task: 'Generate comprehensive Q1 2026 strategic plan'
+  task: 'Generate comprehensive strategic plan for next quarter'
 });
 
 for await (const chunk of stream) {
@@ -355,9 +355,22 @@ The backend handles:
 
 ## Who is Devin?
 
-**Devin** is TiQology's specialized engineering AI agent, designed to handle code generation, technical problem-solving, and development automation tasks. The name is inspired by the concept of AI software engineers, representing the future of autonomous coding capabilities.
+**Devin** is TiQology's specialized engineering AI agent, designed to handle code generation, technical problem-solving, and development automation tasks within the TiQology ecosystem.
 
-In the broader tech industry, "Devin" also refers to an AI software engineer created by Cognition AI, which can autonomously write code, fix bugs, and complete software engineering tasks. TiQology's Devin agent embodies similar capabilities within the TiQology ecosystem, serving as a specialized assistant for engineering tasks.
+### The Name's Inspiration
+
+The name "Devin" is inspired by the broader concept of AI software engineers. In the tech industry, "Devin" is recognized as an AI software engineer developed by Cognition AI, known for its ability to autonomously write code, fix bugs, and complete software engineering tasks end-to-end.
+
+TiQology's Devin agent is a **separate implementation** that brings similar engineering AI capabilities specifically to the TiQology platform. While inspired by the same vision of AI-powered software engineering, TiQology's Devin is integrated with the platform's AI Gateway and designed to work alongside the other specialized agents in the TiQology ecosystem.
+
+### Capabilities
+
+Within TiQology, Devin serves as your engineering assistant, providing:
+- Intelligent code generation and refactoring
+- Technical architecture recommendations  
+- Development workflow automation
+- Bug analysis and resolution strategies
+- Best practice guidance for the TiQology stack
 
 ---
 
