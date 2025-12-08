@@ -247,7 +247,7 @@ interface AIRequest {
     content: string;
   }>;
   model?: string;                   // Optional model preference
-  temperature?: number;             // 0.0 - 1.0 (creativity)
+  temperature?: number;             // 0.0 - 1.0 (focused to creative)
   maxTokens?: number;               // Response length limit
 }
 ```
