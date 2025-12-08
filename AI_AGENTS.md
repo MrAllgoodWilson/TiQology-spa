@@ -277,7 +277,7 @@ interface AIResponse {
 
 ## Multi-Agent Orchestration
 
-For complex tasks requiring multiple AI agents:
+For complex tasks requiring multiple AI agents, you can use the `orchestrateAgents()` function:
 
 ```typescript
 import { orchestrateAgents } from '@/lib/aiClient';
@@ -294,11 +294,11 @@ responses.forEach(response => {
 });
 ```
 
-## Future Enhancements
+**Note**: The current implementation executes agents sequentially. Future versions will support parallel execution and intelligent task decomposition for more efficient multi-agent collaboration.
 
-### Streaming Responses (Planned)
+## Streaming Responses (Partial Implementation)
 
-For long-running AI tasks, streaming support is planned:
+The AI Gateway includes a `streamAIRequest()` function for progressive rendering:
 
 ```typescript
 import { streamAIRequest } from '@/lib/aiClient';
@@ -314,14 +314,28 @@ for await (const chunk of stream) {
 }
 ```
 
-### Advanced Features
+**Current Status**: The function exists and can be called, but currently falls back to a single response (non-streaming). Full streaming support will be enabled when the backend implements Server-Sent Events (SSE) or WebSocket connections.
 
-- **Multi-turn Conversations**: Maintain conversation context across requests
-- **Agent Collaboration**: Agents working together on complex tasks
-- **Custom Models**: Per-request model selection (GPT-4, Claude, etc.)
-- **Temperature Control**: Adjust creativity vs. consistency
-- **Token Management**: Optimize token usage and costs
-- **Caching**: Response caching for frequently asked questions
+## Advanced Features
+
+The AI Gateway Client supports several advanced capabilities:
+
+### Currently Implemented
+
+- **Multi-turn Conversations**: Pass conversation history in the `history` field to maintain context across requests
+- **Custom Models**: Specify preferred models per-request using the `model` parameter (e.g., 'gpt-4', 'claude-3-opus')
+- **Temperature Control**: Adjust response creativity vs. consistency using the `temperature` parameter (0.0 - 1.0)
+- **Token Management**: Control response length with the `maxTokens` parameter
+- **Multi-Agent Orchestration**: Use `orchestrateAgents()` to coordinate multiple AI agents on complex tasks (currently executes sequentially)
+
+### Planned Enhancements
+
+- **Streaming Responses**: Real-time progressive rendering for long-running tasks
+  - The `streamAIRequest()` function exists but currently falls back to a single response
+  - Full streaming support requires backend SSE or WebSocket implementation
+- **Advanced Agent Collaboration**: Intelligent task decomposition and parallel agent execution
+- **Response Caching**: Cache frequently asked questions to reduce costs and improve response time
+- **Context Persistence**: Automatic conversation context management across sessions
 
 ## Backend Integration
 
