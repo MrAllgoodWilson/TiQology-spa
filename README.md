@@ -16,6 +16,24 @@ A modern, responsive single-page application built with Vite, React, TypeScript,
 - 🔒 **TrustShield Lite** - Security monitoring and threat management
 - 👤 **User Profile Management** - Profile and preferences configuration
 - 📦 **Multiple Modules** - BookIt marketplace, Dashboard, Organizations, and more
+- 🤖 **AI Agents Ecosystem** - 8 specialized AI agents for different tasks (Kiki, Devin, Leri, Rocket, Sentinel, Oracle, Sage, OpsBot)
+
+## AI Agents
+
+TiQology features a comprehensive AI ecosystem with 8 specialized AI agents, each designed for specific tasks:
+
+- **🤖 Kiki** - General AI assistant for conversational help and guidance
+- **👨‍💻 Devin** - Engineering AI for code generation and technical tasks
+- **💰 Leri** - Financial AI for transaction analysis and budget insights
+- **🚀 Rocket** - Deployment AI for infrastructure and DevOps automation
+- **🛡️ Sentinel** - Security AI for threat detection and risk assessment
+- **🔮 Oracle** - Analytics AI for data insights and predictions
+- **🧙 Sage** - Strategic AI for planning and decision support
+- **⚙️ OpsBot** - Operational AI for task automation and workflows
+
+All AI interactions go through a centralized AI Gateway Client for consistency, security, and scalability.
+
+👉 **For detailed documentation on each AI agent, see [AI_AGENTS.md](./AI_AGENTS.md)**
 
 ## Tech Stack
 
@@ -178,7 +196,7 @@ The `/dashboard` route features the TiQology Consumer Home Dashboard v1, a compr
 ### Dashboard Components
 
 - **Hero Card** - Welcome message and personalized greeting
-- **Ask Kiki** - AI-powered financial assistant with quick suggestions
+- **Ask Kiki** - AI-powered financial assistant with quick suggestions (powered by Kiki AI agent - see [AI_AGENTS.md](./AI_AGENTS.md))
 - **Missions Card** - Track active missions, progress, and rewards
 - **Money Snapshot** - View total balance, rewards earned, and monthly spending
 - **Quick Actions** - Fast access to common tasks (Pay Bills, Transfer, Invest, etc.)
