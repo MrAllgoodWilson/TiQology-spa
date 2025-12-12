@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { mockWarRoomModules, getStatusCounts, type ModuleStatus } from '../mocks/warRoomMock';
+import AskRocketCard from '../components/warroom/AskRocketCard';
 
 export default function WarRoomPage() {
   const statusCounts = getStatusCounts();
@@ -64,6 +65,9 @@ export default function WarRoomPage() {
           </div>
         </div>
       </div>
+
+      {/* Ask Rocket Card */}
+      <AskRocketCard />
 
       {/* Modules Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
