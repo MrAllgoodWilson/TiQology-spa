@@ -105,9 +105,7 @@ export default function AskRocketCard() {
             <div>
               <h3 className="font-bold">Error</h3>
               <p className="text-sm">{error}</p>
-              <p className="text-xs opacity-60 mt-1">
-                Note: AI gateway not yet connected to backend
-              </p>
+
             </div>
           </div>
         )}
