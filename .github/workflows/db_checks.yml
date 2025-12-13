@@ -108,7 +108,7 @@ jobs:
           CACHE_HIT=$(psql "$DATABASE_URL" -t -c "SELECT ROUND(sum(heap_blks_hit)::numeric / NULLIF(sum(heap_blks_hit) + sum(heap_blks_read), 0) * 100, 2) FROM pg_statio_user_tables;" | xargs)
           echo "Cache Hit Ratio: ${CACHE_HIT}%"
           
-          if (( $(echo "$CACHE_HIT < 95" | bc -l) )); then
+          if [ -n "$CACHE_HIT" ] && [ "$(echo "$CACHE_HIT < 95" | awk '{print ($1 < 95)}')" -eq 1 ]; then
             echo "::warning::Cache hit ratio is below 95% (${CACHE_HIT}%)"
           fi
           
