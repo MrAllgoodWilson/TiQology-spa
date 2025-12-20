@@ -168,8 +168,6 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     method: 'POST',
     headers: getHeaders(false),
     body: JSON.stringify({
-      email: payload.email,
-      password: payload.password,
       user: {
         email: payload.email,
         password: payload.password,
