@@ -35,34 +35,31 @@ function getHeaders(includeAuth: boolean = true): HeadersInit {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
-  logDev('Response received:', {
-    url: response.url,
-    status: response.status,
-    statusText: response.statusText,
-    ok: response.ok
-  });
-
   if (!response.ok) {
-    let errorBody = '';
-    try {
-      errorBody = await response.text();
-    } catch (e) {
-      logErrorDev('Failed to read error response:', e);
+    // Default user-friendly message
+    let userMessage = 'Something went wrong. Please try again.';
+
+    // Handle 401 explicitly
+    if (response.status === 401) {
+      userMessage = 'Invalid email or password';
+    } else {
+      try {
+        const data = await response.json();
+        userMessage =
+          data?.error ||
+          data?.message ||
+          userMessage;
+      } catch {
+        // ignore JSON parse errors
+      }
     }
-    
-    const errorMessage = `HTTP ${response.status}: ${errorBody || response.statusText}`;
-    logErrorDev('API Error:', {
-      status: response.status,
-      statusText: response.statusText,
-      url: response.url,
-      body: errorBody,
-      headers: Object.fromEntries(response.headers.entries())
-    });
-    
-    throw new Error(errorMessage);
+
+    throw new Error(userMessage);
   }
+
   return response.json() as Promise<T>;
 }
+
 
 export interface LoginPayload {
   email: string;
