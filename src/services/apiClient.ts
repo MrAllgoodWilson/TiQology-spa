@@ -166,13 +166,23 @@ export interface DashboardSnapshot {
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   logDev('POST /api/v1/auth/login', { email: payload.email });
+
   const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: getHeaders(false),
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      email: payload.email,
+      password: payload.password,
+      user: {
+        email: payload.email,
+        password: payload.password,
+      },
+    }),
   });
+
   return handleResponse<LoginResponse>(response);
 }
+
 
 export async function register(
   payload: RegisterPayload
