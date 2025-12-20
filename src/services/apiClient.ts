@@ -161,19 +161,46 @@ export interface DashboardSnapshot {
   tasks: Task[];
 }
 
+// In apiClient.ts, update the login function:
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   logDev('POST /api/v1/auth/login', { email: payload.email });
+  
+  // Log environment info
+  console.log('Environment:', {
+    MODE: import.meta.env.MODE,
+    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+    BASE_URL,
+    NODE_ENV: import.meta.env.NODE_ENV,
+  });
 
   const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: getHeaders(false),
     body: JSON.stringify({
-      user: {
-        email: payload.email,
-        password: payload.password,
-      },
+      email: payload.email,
+      password: payload.password,
     }),
   });
+
+  // Enhanced logging for production debugging
+  console.log('Login Response:', {
+    status: response.status,
+    statusText: response.statusText,
+    url: response.url,
+    headers: Object.fromEntries(response.headers.entries()),
+  });
+
+  // For non-OK responses, log the raw response
+  if (!response.ok) {
+    const rawText = await response.text();
+    console.error('Raw error response:', rawText);
+    try {
+      const errorData = JSON.parse(rawText);
+      console.error('Parsed error:', errorData);
+    } catch {
+      // Not JSON
+    }
+  }
 
   return handleResponse<LoginResponse>(response);
 }
