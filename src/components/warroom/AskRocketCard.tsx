@@ -46,9 +46,15 @@ export default function AskRocketCard() {
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title">
-          🚀 Ask Rocket
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="card-title">
+            🚀 Ask Rocket
+          </h2>
+          <div className="badge badge-success gap-2">
+            <span className="inline-block w-2 h-2 bg-white rounded-full animate-pulse"></span>
+            Ready for Duty
+          </div>
+        </div>
         <p className="text-sm text-base-content/70">
           Your AI deployment expert - Ask about infrastructure, deployments, or DevOps automation
         </p>
