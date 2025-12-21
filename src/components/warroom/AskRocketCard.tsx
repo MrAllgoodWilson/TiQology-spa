@@ -50,8 +50,8 @@ export default function AskRocketCard() {
           <h2 className="card-title">
             🚀 Ask Rocket
           </h2>
-          <div className="badge badge-success gap-2">
-            <span className="inline-block w-2 h-2 bg-white rounded-full animate-pulse"></span>
+          <div className="badge badge-success gap-2" role="status" aria-label="Rocket AI is ready for duty">
+            <span className="inline-block w-2 h-2 bg-white rounded-full animate-pulse" aria-hidden="true"></span>
             Ready for Duty
           </div>
         </div>
