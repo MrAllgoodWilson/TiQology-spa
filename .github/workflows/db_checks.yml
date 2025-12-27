@@ -21,9 +21,9 @@ on:
         type: boolean
 
 permissions:
-  contents: read
-  issues: write
-  pull-requests: write
+  contents: read        # ENH-006: Minimized - read-only for checkout
+  issues: write         # Required for creating failure issues
+  pull-requests: write  # Required for PR comments
 
 jobs:
   database-checks:

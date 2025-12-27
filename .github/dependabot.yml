@@ -1,0 +1,55 @@
+# ENH-007: Dependabot Integration for Automated Security Updates
+# ENH-008: Secret Scanning & Dependency Vulnerability Management
+# Phase 17.3 P1 Enhancement Implementation
+
+version: 2
+updates:
+  # npm dependencies (frontend)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "MrAllgoodWilson"
+    labels:
+      - "dependencies"
+      - "security"
+      - "phase17"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Group minor and patch updates
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+    # Always create PR for security updates
+    versioning-strategy: increase
+    
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "MrAllgoodWilson"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "phase17"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

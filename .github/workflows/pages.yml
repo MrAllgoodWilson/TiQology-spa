@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read  # ENH-006: Minimized to read-only for checkout
+  pages: write    # Required for GitHub Pages deployment
+  id-token: write # Required for GitHub Pages authentication
 
 concurrency:
   group: "pages"
@@ -36,6 +36,15 @@ jobs:
       - name: Build with Vite
         run: npm run build
         working-directory: .
+      
+      - name: Verify Build Output (ENH-009)
+        run: |
+          if [ ! -d "./dist" ] || [ -z "$(ls -A ./dist)" ]; then
+            echo "❌ Build failed: dist directory is empty or missing"
+            exit 1
+          fi
+          echo "✅ Build verification successful"
+          ls -lah ./dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
