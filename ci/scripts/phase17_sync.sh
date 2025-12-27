@@ -60,10 +60,11 @@ print_status "GitHub CLI authenticated"
 
 # Get list of repositories
 OWNER="MrAllgoodWilson"
-print_info "Fetching repositories for $OWNER..."
+REPO_LIMIT="${REPO_LIMIT:-100}"  # Default 100, can be overridden via env var
+print_info "Fetching repositories for $OWNER (limit: $REPO_LIMIT)..."
 
 # List all repos (you can filter this as needed)
-REPOS=$(gh repo list "$OWNER" --json name --jq '.[].name' --limit 100)
+REPOS=$(gh repo list "$OWNER" --json name --jq '.[].name' --limit "$REPO_LIMIT")
 
 if [ -z "$REPOS" ]; then
     print_error "No repositories found for $OWNER"
@@ -171,8 +172,9 @@ for repo in $REPOS; do
         echo "⊘ $repo - Workflow not present" >> "$RESULTS_FILE"
     fi
     
-    # Small delay to avoid rate limiting
-    sleep 1
+    # Configurable delay to avoid rate limiting (default 1 second)
+    SYNC_DELAY="${SYNC_DELAY:-1}"
+    sleep "$SYNC_DELAY"
 done
 
 echo ""

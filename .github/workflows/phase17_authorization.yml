@@ -272,7 +272,7 @@ jobs:
           echo "## Open Pull Requests Analysis" > pr_analysis.txt
           echo "" >> pr_analysis.txt
           
-          cat open_prs.json | jq -r '.[] | "PR #\(.number): \(.title)\n  Branch: \(.headRefName)\n  Mergeable: \(.mergeable)\n"' >> pr_analysis.txt
+          jq -r '.[] | "PR #\(.number): \(.title)\n  Branch: \(.headRefName)\n  Mergeable: \(.mergeable)\n"' open_prs.json >> pr_analysis.txt
           
           cat pr_analysis.txt
 
