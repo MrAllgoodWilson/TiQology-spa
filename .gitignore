@@ -12,6 +12,12 @@ logs/phase17/*.log
 logs/phase17/*.md
 !logs/phase17/README.md
 
+# Phase 18 logs - keep directory structure and key reports
+logs/phase18/*.log
+logs/phase18/*.json
+!logs/phase18/README.md
+!logs/phase18/PHASE18.1_TELEMETRY_REPORT.md
+
 # Dependencies
 node_modules
 node_modules/.package-lock.json
