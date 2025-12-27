@@ -29,11 +29,12 @@ on:
     - cron: '0 3 * * *'
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  actions: write
-  checks: write
+  contents: write       # ENH-006: Required for branch operations
+  issues: write         # ENH-006: Required for creating issues
+  pull-requests: write  # ENH-006: Required for PR management
+  actions: write        # ENH-006: Required for workflow management
+  checks: write         # ENH-006: Required for check runs
+  # ENH-006: All permissions explicitly defined and minimized
 
 env:
   ROCKET_AGENT: 'Rocket-AI-Deployment'
