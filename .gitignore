@@ -18,6 +18,13 @@ logs/phase18/*.json
 !logs/phase18/README.md
 !logs/phase18/PHASE18.1_TELEMETRY_REPORT.md
 
+# Phase 19 logs - keep directory structure but exclude generated logs
+logs/phase19/preflight_*.log
+logs/phase19/deployment_report_*.md
+logs/phase19/PHASE19_DEPLOYMENT_READINESS_REPORT.md
+!logs/phase19/README.md
+!logs/phase19/PHASE19_IMPLEMENTATION_SUMMARY.md
+
 # Dependencies
 node_modules
 node_modules/.package-lock.json
