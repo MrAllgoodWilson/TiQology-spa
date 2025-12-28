@@ -23,9 +23,9 @@ A modern, responsive single-page application built with Vite, React, TypeScript,
 TiQology features a comprehensive AI ecosystem with 8 specialized AI agents, each designed for specific tasks:
 
 - **🤖 Kiki** - General AI assistant for conversational help and guidance
-- **👨‍💻 Devin** - Engineering AI for code generation and technical tasks
+- **👨‍💻 Devin** - Engineering AI for code generation and technical tasks (Phase 17 Secondary Node)
 - **💰 Leri** - Financial AI for transaction analysis and budget insights
-- **🚀 Rocket** - Deployment AI for infrastructure and DevOps automation
+- **🚀 Rocket** - Deployment AI for infrastructure and DevOps automation (Phase 17 Primary Node)
 - **🛡️ Sentinel** - Security AI for threat detection and risk assessment
 - **🔮 Oracle** - Analytics AI for data insights and predictions
 - **🧙 Sage** - Strategic AI for planning and decision support
@@ -34,6 +34,16 @@ TiQology features a comprehensive AI ecosystem with 8 specialized AI agents, eac
 All AI interactions go through a centralized AI Gateway Client for consistency, security, and scalability.
 
 👉 **For detailed documentation on each AI agent, see [AI_AGENTS.md](./AI_AGENTS.md)**
+
+### Phase 17 Operational Network
+
+This repository is part of the **TiQology Operational Network** with Phase 17 authorization for automated operations:
+- 🚀 Repository maintenance and CI/CD pipeline alignment
+- 🌿 Branch cleanup and PR conflict detection
+- 📋 Workflow standardization across all repos
+- 🔄 Deployment orchestration and coordination
+
+👉 **For Phase 17 operations documentation, see [PHASE17_OPERATIONS.md](./PHASE17_OPERATIONS.md)**
 
 ## Tech Stack
 

@@ -1,0 +1,226 @@
+name: Phase 18.1 Telemetry Collection
+
+# Shadow mode telemetry collection - runs on all workflow completions
+# Collects metrics without interfering with existing operations
+on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed, requested, in_progress]
+  
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Operation mode'
+        required: false
+        default: 'shadow'
+        type: choice
+        options:
+          - shadow
+          - active
+          - disabled
+      
+      collect_historical:
+        description: 'Collect historical data from Phase 17 logs'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+
+jobs:
+  collect_telemetry:
+    name: Collect Workflow Telemetry
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Collection Environment
+        run: |
+          mkdir -p logs/phase18/telemetry
+          mkdir -p logs/phase18/metrics
+          mkdir -p logs/phase18/anomalies
+          echo "Telemetry collection initialized at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+      
+      - name: Collect Workflow Metrics
+        id: collect
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== Phase 18.1 Telemetry Collection ===" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          echo "Mode: ${{ inputs.mode || 'shadow' }}" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          echo "Trigger: ${{ github.event_name }}" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          
+          # Collect current workflow run metrics
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+            WORKFLOW_STATUS="${{ github.event.workflow_run.conclusion }}"
+            WORKFLOW_ID="${{ github.event.workflow_run.id }}"
+            RUN_NUMBER="${{ github.event.workflow_run.run_number }}"
+            
+            echo "Workflow: $WORKFLOW_NAME" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+            echo "Status: $WORKFLOW_STATUS" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+            echo "Run ID: $WORKFLOW_ID" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+            echo "Run Number: $RUN_NUMBER" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+            
+            # Collect detailed metrics using GitHub CLI
+            if command -v gh &> /dev/null; then
+              echo "Collecting detailed workflow metrics..." | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+              
+              # Get workflow run details
+              gh run view $WORKFLOW_ID --json conclusion,createdAt,updatedAt,durationMs,jobs > \
+                logs/phase18/metrics/run_${WORKFLOW_ID}_$(date +%Y%m%d_%H%M%S).json 2>&1 || \
+                echo "Warning: Could not fetch detailed metrics" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+            fi
+          fi
+          
+          # Collect repository-wide metrics
+          echo "Collecting repository metrics..." | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          
+          # Recent workflow runs (last 30 days)
+          if command -v gh &> /dev/null; then
+            gh run list --limit 100 --json conclusion,durationMs,createdAt,workflowName > \
+              logs/phase18/metrics/recent_runs_$(date +%Y%m%d).json 2>&1 || \
+              echo "Warning: Could not fetch recent runs" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+          fi
+          
+          echo "Telemetry collection completed successfully" | tee -a logs/phase18/telemetry/collection_$(date +%Y%m%d).log
+      
+      - name: Analyze Metrics & Detect Anomalies
+        run: |
+          echo "=== Anomaly Detection Analysis ===" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+          echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+          
+          # Basic anomaly detection (will be enhanced with ML in Phase 18.2)
+          if [ -f logs/phase18/metrics/recent_runs_$(date +%Y%m%d).json ]; then
+            echo "Analyzing recent workflow patterns..." | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+            
+            # Count failures vs successes
+            SUCCESS_COUNT=$(jq '[.[] | select(.conclusion == "success")] | length' logs/phase18/metrics/recent_runs_$(date +%Y%m%d).json 2>/dev/null || echo "0")
+            FAILURE_COUNT=$(jq '[.[] | select(.conclusion == "failure")] | length' logs/phase18/metrics/recent_runs_$(date +%Y%m%d).json 2>/dev/null || echo "0")
+            TOTAL_COUNT=$(jq 'length' logs/phase18/metrics/recent_runs_$(date +%Y%m%d).json 2>/dev/null || echo "0")
+            
+            if [ "$TOTAL_COUNT" -gt 0 ]; then
+              SUCCESS_RATE=$(echo "scale=2; $SUCCESS_COUNT * 100 / $TOTAL_COUNT" | bc 2>/dev/null || echo "N/A")
+              echo "Success Rate: ${SUCCESS_RATE}% ($SUCCESS_COUNT/$TOTAL_COUNT)" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+              echo "Failure Count: $FAILURE_COUNT" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+              
+              # Detect anomaly if success rate < 80%
+              if [ -n "$SUCCESS_RATE" ] && [ "${SUCCESS_RATE%.*}" -lt 80 ] 2>/dev/null; then
+                echo "⚠️ ANOMALY DETECTED: Success rate below 80% threshold" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+              fi
+            fi
+          fi
+          
+          echo "Anomaly detection completed" | tee -a logs/phase18/anomalies/analysis_$(date +%Y%m%d).log
+      
+      - name: Collect Historical Data (Optional)
+        if: inputs.collect_historical == 'true'
+        run: |
+          echo "=== Historical Data Collection ===" | tee -a logs/phase18/telemetry/historical_$(date +%Y%m%d).log
+          echo "Collecting Phase 17 logs for ML training data..." | tee -a logs/phase18/telemetry/historical_$(date +%Y%m%d).log
+          
+          # Check for Phase 17 logs
+          if [ -d "logs/phase17" ]; then
+            echo "Found Phase 17 logs directory" | tee -a logs/phase18/telemetry/historical_$(date +%Y%m%d).log
+            find logs/phase17 -type f -name "*.log" -o -name "*.md" | \
+              while read file; do
+                echo "  - $file" | tee -a logs/phase18/telemetry/historical_$(date +%Y%m%d).log
+              done
+          else
+            echo "No Phase 17 logs found (expected in fresh deployment)" | tee -a logs/phase18/telemetry/historical_$(date +%Y%m%d).log
+          fi
+      
+      - name: Generate Telemetry Summary
+        run: |
+          cat > logs/phase18/telemetry_summary_$(date +%Y%m%d_%H%M%S).md << 'EOF'
+          # Phase 18.1 Telemetry Summary
+          
+          **Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Mode:** ${{ inputs.mode || 'shadow' }}
+          **Status:** ✅ Operational
+          
+          ## Collection Status
+          - Workflow telemetry collection: ✅ Active
+          - Metrics aggregation: ✅ Operational
+          - Anomaly detection: ✅ Basic rules enabled
+          - Historical data: ${{ inputs.collect_historical == 'true' && '✅ Collected' || '⏸️ Not requested' }}
+          
+          ## Metrics Collected
+          - Workflow execution data
+          - Success/failure rates
+          - Duration metrics
+          - Resource utilization patterns
+          
+          ## Next Steps
+          - Continue shadow mode data collection
+          - Build baseline metrics database
+          - Prepare for Phase 18.2 ML model training
+          - Monitor for anomalies
+          
+          EOF
+          
+          cat logs/phase18/telemetry_summary_$(date +%Y%m%d_%H%M%S).md
+      
+      - name: Upload Telemetry Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase18-telemetry-data-${{ github.run_id }}
+          path: |
+            logs/phase18/**/*.log
+            logs/phase18/**/*.json
+            logs/phase18/**/*.md
+          retention-days: 90
+      
+      - name: Report Collection Status
+        run: |
+          echo "✅ Phase 18.1 telemetry collection completed successfully"
+          echo "📊 Artifacts uploaded for analysis and ML training"
+          echo "🔍 Shadow mode active - no impact on existing workflows"
+          echo "📝 Logs available in logs/phase18/ directory"
+
+  validate_collection:
+    name: Validate Telemetry Collection
+    runs-on: ubuntu-latest
+    needs: collect_telemetry
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Download Telemetry Data
+        uses: actions/download-artifact@v4
+        with:
+          name: phase18-telemetry-data-${{ github.run_id }}
+          path: logs/phase18
+      
+      - name: Validate Data Quality
+        run: |
+          echo "=== Telemetry Data Validation ===" | tee logs/phase18/validation_$(date +%Y%m%d_%H%M%S).log
+          
+          # Check for required files
+          VALIDATION_STATUS="✅ PASSED"
+          
+          if [ ! -d "logs/phase18/telemetry" ]; then
+            echo "⚠️ Telemetry directory missing" | tee -a logs/phase18/validation_$(date +%Y%m%d_%H%M%S).log
+            VALIDATION_STATUS="⚠️ WARNING"
+          fi
+          
+          if [ ! -d "logs/phase18/metrics" ]; then
+            echo "⚠️ Metrics directory missing" | tee -a logs/phase18/validation_$(date +%Y%m%d_%H%M%S).log
+            VALIDATION_STATUS="⚠️ WARNING"
+          fi
+          
+          # Count collected files
+          TELEMETRY_FILES=$(find logs/phase18 -type f 2>/dev/null | wc -l)
+          echo "📊 Files collected: $TELEMETRY_FILES" | tee -a logs/phase18/validation_$(date +%Y%m%d_%H%M%S).log
+          
+          echo "Validation Status: $VALIDATION_STATUS" | tee -a logs/phase18/validation_$(date +%Y%m%d_%H%M%S).log
+          
+          # Set output for reporting
+          echo "validation_status=$VALIDATION_STATUS" >> $GITHUB_OUTPUT

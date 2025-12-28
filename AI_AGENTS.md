@@ -52,6 +52,7 @@ Devin is TiQology's engineering AI, specialized in:
 - Architecture recommendations
 - Development automation
 - Bug analysis and fixes
+- **Phase 17 Operations:** Code quality validation, workflow configuration review, technical standards enforcement
 
 **Example Usage**:
 ```typescript
@@ -68,6 +69,9 @@ const response = await askDevin(
 ```
 
 **Note**: Named after the AI software engineer concept, representing autonomous coding capabilities.
+
+**Phase 17 Coordination:**  
+Devin operates as the **Secondary Operations Node** in coordination with Rocket, providing engineering validation and technical oversight. See [PHASE17_OPERATIONS.md](./PHASE17_OPERATIONS.md) for details.
 
 ---
 
@@ -106,6 +110,7 @@ Rocket handles deployment operations:
 - Performance monitoring
 - Scaling recommendations
 - DevOps workflows
+- **Phase 17 Operations:** Repository maintenance, CI/CD pipeline alignment, branch cleanup, workflow standardization
 
 **Example Usage**:
 ```typescript
@@ -116,6 +121,9 @@ const response = await askRocket(
   { environment: 'production' }
 );
 ```
+
+**Phase 17 Authorization:**  
+Rocket serves as the **Primary Operations Node** for the TiQology Operational Network with full write access authorization. See [PHASE17_OPERATIONS.md](./PHASE17_OPERATIONS.md) for details.
 
 ---
 
